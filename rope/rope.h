@@ -9,7 +9,7 @@ typedef struct {
 
 void create_rope(rope_t *self);
 
-rope_t *concat_ropes(rope_t *left, rope_t *right);
+void concat_ropes(rope_t *left, rope_t *right, rope_t *new_rope);
 
 void destroy_rope(rope_t *self);
 
