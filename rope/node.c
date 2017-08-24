@@ -1,7 +1,7 @@
 #include <stdbool.h>
 #include "node.h"
 
-void create_rope_node(rope_node_t *self, const char *string) {
+void createRopeNode(RopeNode *self, const char *string) {
     self->left = NULL;
     self->right = NULL;
     if (string == NULL) {
@@ -15,10 +15,10 @@ void create_rope_node(rope_node_t *self, const char *string) {
     }
 }
 
-void destroy_rope_node(rope_node_t *self) {
+void destroyRopeNode(RopeNode *self) {
     free(self->content);
 }
 
-bool is_leaf(rope_node_t *self) {
+bool isLeaf(RopeNode *self) {
     return !(self->left || self->right);
 }

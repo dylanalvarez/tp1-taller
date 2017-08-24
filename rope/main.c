@@ -13,28 +13,28 @@ void assert(bool condition) {
 
 // NODE TESTS
 
-void test_new_rope_node_has_weight_of_string() {
-    rope_node_t rope_node;
-    create_rope_node(&rope_node, "Hola");
+void testNewRopeNodeHasWeightOfString() {
+    RopeNode rope_node;
+    createRopeNode(&rope_node, "Hola");
 
     assert(rope_node.weight == 4);
 
-    destroy_rope_node(&rope_node);
+    destroyRopeNode(&rope_node);
 }
 
-void test_new_rope_is_leaf() {
-    rope_node_t rope_node;
-    create_rope_node(&rope_node, "Hola");
+void testNewRopeIsLeaf() {
+    RopeNode rope_node;
+    createRopeNode(&rope_node, "Hola");
 
-    assert(is_leaf(&rope_node));
+    assert(isLeaf(&rope_node));
 
-    destroy_rope_node(&rope_node);
+    destroyRopeNode(&rope_node);
 }
 
 // MAIN
 
 int main(int argc, char **argv) {
-    test_new_rope_node_has_weight_of_string();
-    test_new_rope_is_leaf();
+    testNewRopeNodeHasWeightOfString();
+    testNewRopeIsLeaf();
     return 0;
 }
