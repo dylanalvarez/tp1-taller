@@ -13,8 +13,10 @@ typedef struct rope_node {
     struct rope_node *right;
 } rope_node_t;
 
-void create_rope_node(rope_node_t *self, const char *string);
+// Post: self is a rope node containing a copy of the passed in string
+void create_rope_node(rope_node_t *self, const char *content);
 
+// Pre:  self is a created rope
 bool is_leaf(rope_node_t *self);
 
 void destroy_rope_node(rope_node_t *self);
