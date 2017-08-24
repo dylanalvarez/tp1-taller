@@ -29,7 +29,8 @@ void splitRopes(
         Rope *right_destination
 );
 
-// Faster way of getting the length of the string contained within self
+// Post: returns length of the string contained within self
+//       it's faster than calling strlen on getRopeContent
 size_t getRopeContentLength(Rope *self);
 
 // Pre:  buffer's length is at least getRopeContentLength(&self) + 1 bytes
