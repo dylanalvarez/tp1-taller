@@ -10,7 +10,7 @@ typedef struct {
 // Post: self is a rope containing an empty string.
 void createRope(Rope *self, const char *content);
 
-// Pre:  left and right are both created ropes.
+// Pre:  left and right are both distinct created ropes.
 // Post: left and right are both destroyed,
 //       destination is created with their contents.
 void concatRopes(
@@ -30,7 +30,7 @@ void splitRopes(
 );
 
 // Faster way of getting the length of the string contained within self
-int getRopeContentLength(Rope *self);
+size_t getRopeContentLength(Rope *self);
 
 // Pre:  buffer's length is at least getRopeContentLength(&self) + 1 bytes
 // Post: buffer contains the string contained within self

@@ -41,7 +41,7 @@ void testConcatenationOfEmptyRopesHasNoLength() {
     destroyRope(&rope3);
 }
 
-void testConcatenationOfEmptyRopesHasSumOfLengths() {
+void testConcatenationOfRopesHasSumOfLengths() {
     Rope rope1;
     createRope(&rope1, "123");
     Rope rope2;
@@ -52,6 +52,27 @@ void testConcatenationOfEmptyRopesHasSumOfLengths() {
     assert(getRopeContentLength(&rope3) == 6);
 
     destroyRope(&rope3);
+}
+
+void testMultipleConcatenationOfRopesHasSumOfLengths() {
+    Rope rope1;
+    createRope(&rope1, "1");
+    Rope rope2;
+    createRope(&rope2, "23");
+    Rope rope3;
+    createRope(&rope3, "456");
+    Rope rope4;
+    createRope(&rope4, "7890");
+    Rope rope5;
+    Rope rope6;
+    Rope rope7;
+
+    concatRopes(&rope1, &rope2, &rope5);
+    concatRopes(&rope3, &rope4, &rope6);
+    concatRopes(&rope5, &rope6, &rope7);
+    assert(getRopeContentLength(&rope7) == 10);
+
+    destroyRope(&rope7);
 }
 
 void testNewEmptyRopeKeepsAnEmptyString() {
@@ -108,6 +129,7 @@ int main(int argc, char **argv) {
     testNewEmptyRopeKeepsAnEmptyString();
     testConcatenationOfEmptyRopesKeepsAnEmptyString();
     testNewRopeHasLengthOfPassedInString();
-    testConcatenationOfEmptyRopesHasSumOfLengths();
+    testConcatenationOfRopesHasSumOfLengths();
+    testMultipleConcatenationOfRopesHasSumOfLengths();
     return 0;
 }

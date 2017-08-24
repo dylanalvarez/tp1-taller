@@ -6,23 +6,26 @@ void createRope(Rope *self, const char *content) {
     createRopeNode(self->root, content);
 }
 
-void concatRopes(Rope *left, Rope *right, Rope *new_rope) {
-    createRope(new_rope, NULL);
-    new_rope->root->left = left->root;
-    new_rope->root->right = right->root;
-    new_rope->root->weight = new_rope->root->left->weight;
-}
-
-void splitRopes(Rope *source, int index, Rope *left, Rope *right) {}
-
-int getRopeContentLength(Rope *self) {
-    int total = 0;
-    RopeNode *node = self->root;
+size_t _getContentLengthFromRoot(RopeNode *node) {
+    size_t total = 0;
     while (node) {
         total += node->weight;
         node = node->right;
     }
     return total;
+}
+
+void concatRopes(Rope *left, Rope *right, Rope *new_rope) {
+    createRope(new_rope, NULL);
+    new_rope->root->left = left->root;
+    new_rope->root->right = right->root;
+    new_rope->root->weight = _getContentLengthFromRoot(new_rope->root->left);
+}
+
+void splitRopes(Rope *source, int index, Rope *left, Rope *right) {}
+
+size_t getRopeContentLength(Rope *self) {
+    return _getContentLengthFromRoot(self->root);
 }
 
 static void _fillBuffer(RopeNode *node, char *buffer, int *position) {
