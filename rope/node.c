@@ -6,6 +6,7 @@ void createRopeNode(RopeNode *self, const char *string) {
     self->right = NULL;
     if (string == NULL) {
         self->content = NULL;
+        self->weight = 0;
     } else {
         size_t string_length = strlen(string);
         self->weight = string_length;
@@ -16,7 +17,9 @@ void createRopeNode(RopeNode *self, const char *string) {
 }
 
 void destroyRopeNode(RopeNode *self) {
-    free(self->content);
+    if (self->content) {
+        free(self->content);
+    }
 }
 
 bool isLeaf(RopeNode *self) {

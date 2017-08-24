@@ -10,8 +10,6 @@ void concatRopes(Rope *left, Rope *right, Rope *new_rope) {
     createRope(new_rope);
     new_rope->root->left = left->root;
     new_rope->root->right = right->root;
-    destroyRope(left);
-    destroyRope(right);
 }
 
 void splitRopes(Rope *source, int index, Rope *left, Rope *right) {}
@@ -26,9 +24,9 @@ int getRopeContentLength(Rope *self) {
     return total;
 }
 
-static void fillBuffer(RopeNode *node, char *buffer, int *position) {
+static void _fillBuffer(RopeNode *node, char *buffer, int *position) {
     if (!node) { return; }
-    fillBuffer(node->left, buffer, position);
+    _fillBuffer(node->left, buffer, position);
 
     if (node->content) {
         size_t length = strlen(node->content);
@@ -39,15 +37,23 @@ static void fillBuffer(RopeNode *node, char *buffer, int *position) {
         buffer[*position] = (char) 0;
     }
 
-    fillBuffer(node->right, buffer, position);
+    _fillBuffer(node->right, buffer, position);
 }
 
 void getRopeContent(Rope *self, char *buffer) {
     int position = 0;
     buffer[0] = (char) 0;
-    fillBuffer(self->root, buffer, &position);
+    _fillBuffer(self->root, buffer, &position);
+}
+
+void _destroyNode(RopeNode *node) {
+    if (!node) { return; }
+    _destroyNode(node->left);
+    _destroyNode(node->right);
+    destroyRopeNode(node);
+    free(node);
 }
 
 void destroyRope(Rope *self) {
-    destroyRopeNode(self->root);
+    _destroyNode(self->root);
 }

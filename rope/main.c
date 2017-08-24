@@ -10,6 +10,27 @@ void assert(bool condition) {
 
 // ROPE TESTS
 
+void testNewRopeHasNoLength() {
+    Rope rope;
+    createRope(&rope);
+
+    assert(getRopeContentLength(&rope) == 0);
+
+    destroyRope(&rope);
+}
+
+void concatenationOfEmptyRopesHasNoLength() {
+    Rope rope1;
+    createRope(&rope1);
+    Rope rope2;
+    createRope(&rope2);
+    Rope rope3;
+
+    concatRopes(&rope1, &rope2, &rope3);
+    assert(getRopeContentLength(&rope3) == 0);
+
+    destroyRope(&rope3);
+}
 
 // NODE TESTS
 
@@ -36,5 +57,7 @@ void testNewRopeIsLeaf() {
 int main(int argc, char **argv) {
     testNewRopeNodeHasWeightOfString();
     testNewRopeIsLeaf();
+    testNewRopeHasNoLength();
+    concatenationOfEmptyRopesHasNoLength();
     return 0;
 }
