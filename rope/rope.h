@@ -7,7 +7,7 @@ typedef struct {
     RopeNode *root;
 } Rope;
 
-// Post: self is a rope containing an empty string.
+// Post: self is a rope containing the passed in string.
 void createRope(Rope *self, const char *content);
 
 // Pre:  left and right are both distinct created ropes.
