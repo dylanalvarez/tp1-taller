@@ -41,6 +41,19 @@ void testConcatenationOfEmptyRopesHasNoLength() {
     destroyRope(&rope3);
 }
 
+void testConcatenationOfEmptyRopesHasSumOfLengths() {
+    Rope rope1;
+    createRope(&rope1, "123");
+    Rope rope2;
+    createRope(&rope2, "456");
+    Rope rope3;
+
+    concatRopes(&rope1, &rope2, &rope3);
+    assert(getRopeContentLength(&rope3) == 6);
+
+    destroyRope(&rope3);
+}
+
 void testNewEmptyRopeKeepsAnEmptyString() {
     Rope rope;
     createRope(&rope, NULL);
@@ -95,5 +108,6 @@ int main(int argc, char **argv) {
     testNewEmptyRopeKeepsAnEmptyString();
     testConcatenationOfEmptyRopesKeepsAnEmptyString();
     testNewRopeHasLengthOfPassedInString();
+    testConcatenationOfEmptyRopesHasSumOfLengths();
     return 0;
 }

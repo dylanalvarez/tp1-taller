@@ -10,6 +10,7 @@ void concatRopes(Rope *left, Rope *right, Rope *new_rope) {
     createRope(new_rope, NULL);
     new_rope->root->left = left->root;
     new_rope->root->right = right->root;
+    new_rope->root->weight = new_rope->root->left->weight;
 }
 
 void splitRopes(Rope *source, int index, Rope *left, Rope *right) {}
