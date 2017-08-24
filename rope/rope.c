@@ -26,7 +26,7 @@ int getRopeContentLength(Rope *self) {
     return total;
 }
 
-void fillBuffer(RopeNode *node, char *buffer, int *position) {
+static void fillBuffer(RopeNode *node, char *buffer, int *position) {
     if (!node) { return; }
     fillBuffer(node->left, buffer, position);
 
