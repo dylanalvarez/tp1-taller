@@ -32,6 +32,17 @@ void concatenationOfEmptyRopesHasNoLength() {
     destroyRope(&rope3);
 }
 
+void testNewRopeKeepsAnEmptyString() {
+    Rope rope;
+    createRope(&rope);
+    char buffer[getRopeContentLength(&rope) + 1];
+    getRopeContent(&rope, buffer);
+
+    assert(strlen(buffer) == 0);
+
+    destroyRope(&rope);
+}
+
 // NODE TESTS
 
 void testNewRopeNodeHasWeightOfString() {
@@ -59,5 +70,6 @@ int main(int argc, char **argv) {
     testNewRopeIsLeaf();
     testNewRopeHasNoLength();
     concatenationOfEmptyRopesHasNoLength();
+    testNewRopeKeepsAnEmptyString();
     return 0;
 }
