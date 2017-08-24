@@ -10,20 +10,29 @@ void assert(bool condition) {
 
 // ROPE TESTS
 
-void testNewRopeHasNoLength() {
+void testNewEmptyRopeHasNoLength() {
     Rope rope;
-    createRope(&rope);
+    createRope(&rope, NULL);
 
     assert(getRopeContentLength(&rope) == 0);
 
     destroyRope(&rope);
 }
 
-void concatenationOfEmptyRopesHasNoLength() {
+void testNewRopeHasLengthOfPassedInString() {
+    Rope rope;
+    createRope(&rope, "example");
+
+    assert(getRopeContentLength(&rope) == strlen("example"));
+
+    destroyRope(&rope);
+}
+
+void testConcatenationOfEmptyRopesHasNoLength() {
     Rope rope1;
-    createRope(&rope1);
+    createRope(&rope1, NULL);
     Rope rope2;
-    createRope(&rope2);
+    createRope(&rope2, NULL);
     Rope rope3;
 
     concatRopes(&rope1, &rope2, &rope3);
@@ -32,15 +41,28 @@ void concatenationOfEmptyRopesHasNoLength() {
     destroyRope(&rope3);
 }
 
-void testNewRopeKeepsAnEmptyString() {
+void testNewEmptyRopeKeepsAnEmptyString() {
     Rope rope;
-    createRope(&rope);
+    createRope(&rope, NULL);
     char buffer[getRopeContentLength(&rope) + 1];
     getRopeContent(&rope, buffer);
 
     assert(strlen(buffer) == 0);
 
     destroyRope(&rope);
+}
+
+void testConcatenationOfEmptyRopesKeepsAnEmptyString() {
+    Rope rope1;
+    createRope(&rope1, NULL);
+    Rope rope2;
+    createRope(&rope2, NULL);
+    Rope rope3;
+
+    concatRopes(&rope1, &rope2, &rope3);
+    assert(getRopeContentLength(&rope3) == 0);
+
+    destroyRope(&rope3);
 }
 
 // NODE TESTS
@@ -68,8 +90,10 @@ void testNewRopeIsLeaf() {
 int main(int argc, char **argv) {
     testNewRopeNodeHasWeightOfString();
     testNewRopeIsLeaf();
-    testNewRopeHasNoLength();
-    concatenationOfEmptyRopesHasNoLength();
-    testNewRopeKeepsAnEmptyString();
+    testNewEmptyRopeHasNoLength();
+    testConcatenationOfEmptyRopesHasNoLength();
+    testNewEmptyRopeKeepsAnEmptyString();
+    testConcatenationOfEmptyRopesKeepsAnEmptyString();
+    testNewRopeHasLengthOfPassedInString();
     return 0;
 }

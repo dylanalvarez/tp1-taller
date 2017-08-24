@@ -1,13 +1,13 @@
 #include <stdio.h>
 #include "rope.h"
 
-void createRope(Rope *self) {
+void createRope(Rope *self, const char *content) {
     self->root = malloc(sizeof(RopeNode));
-    createRopeNode(self->root, NULL);
+    createRopeNode(self->root, content);
 }
 
 void concatRopes(Rope *left, Rope *right, Rope *new_rope) {
-    createRope(new_rope);
+    createRope(new_rope, NULL);
     new_rope->root->left = left->root;
     new_rope->root->right = right->root;
 }

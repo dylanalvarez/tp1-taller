@@ -8,7 +8,7 @@ typedef struct {
 } Rope;
 
 // Post: self is a rope containing an empty string.
-void createRope(Rope *self);
+void createRope(Rope *self, const char *content);
 
 // Pre:  left and right are both created ropes.
 // Post: left and right are both destroyed,
