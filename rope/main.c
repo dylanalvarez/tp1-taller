@@ -4,8 +4,13 @@
 
 // GENERIC FUNCTIONS
 
+int failures = 0;
+
 void assert(bool condition) {
     condition ? printf("OK\n") : printf("FAILED!\n");
+    if (!condition) {
+        failures++;
+    }
 }
 
 // ROPE TESTS
@@ -14,6 +19,10 @@ void testNewEmptyRopeHasNoLength() {
     Rope rope;
     createRope(&rope, NULL);
 
+    char buffer[getRopeContentLength(&rope) + 1];
+    getRopeContent(&rope, buffer);
+
+    assert(strcmp(buffer, "") == 0);
     assert(getRopeContentLength(&rope) == 0);
 
     destroyRope(&rope);
@@ -22,7 +31,10 @@ void testNewEmptyRopeHasNoLength() {
 void testNewRopeHasLengthOfPassedInString() {
     Rope rope;
     createRope(&rope, "example");
+    char buffer[getRopeContentLength(&rope) + 1];
+    getRopeContent(&rope, buffer);
 
+    assert(strcmp(buffer, "example") == 0);
     assert(getRopeContentLength(&rope) == strlen("example"));
 
     destroyRope(&rope);
@@ -36,6 +48,11 @@ void testConcatenationOfEmptyRopesHasNoLength() {
     Rope rope3;
 
     concatRopes(&rope1, &rope2, &rope3);
+
+    char buffer[getRopeContentLength(&rope3) + 1];
+    getRopeContent(&rope3, buffer);
+
+    assert(strcmp(buffer, "") == 0);
     assert(getRopeContentLength(&rope3) == 0);
 
     destroyRope(&rope3);
@@ -49,6 +66,11 @@ void testConcatenationOfRopesHasSumOfLengths() {
     Rope rope3;
 
     concatRopes(&rope1, &rope2, &rope3);
+
+    char buffer[getRopeContentLength(&rope3) + 1];
+    getRopeContent(&rope3, buffer);
+
+    assert(strcmp(buffer, "123456") == 0);
     assert(getRopeContentLength(&rope3) == 6);
 
     destroyRope(&rope3);
@@ -70,7 +92,39 @@ void testMultipleConcatenationOfRopesHasSumOfLengths() {
     concatRopes(&rope1, &rope2, &rope5);
     concatRopes(&rope3, &rope4, &rope6);
     concatRopes(&rope5, &rope6, &rope7);
+
+    char buffer[getRopeContentLength(&rope7) + 1];
+    getRopeContent(&rope7, buffer);
+
+    assert(strcmp(buffer, "1234567890") == 0);
+
     assert(getRopeContentLength(&rope7) == 10);
+
+    destroyRope(&rope7);
+}
+
+void testMultipleConcatenationOfRopesHasSumOfLengthsAgain() {
+    Rope rope1;
+    createRope(&rope1, "12");
+    Rope rope2;
+    createRope(&rope2, "2");
+    Rope rope3;
+    createRope(&rope3, "4567");
+    Rope rope4;
+    createRope(&rope4, "");
+    Rope rope5;
+    Rope rope6;
+    Rope rope7;
+
+    concatRopes(&rope1, &rope2, &rope5);
+    concatRopes(&rope3, &rope4, &rope6);
+    concatRopes(&rope5, &rope6, &rope7);
+
+    char buffer[getRopeContentLength(&rope7) + 1];
+    getRopeContent(&rope7, buffer);
+
+    assert(strcmp(buffer, "1224567") == 0);
+    assert(getRopeContentLength(&rope7) == 7);
 
     destroyRope(&rope7);
 }
@@ -81,6 +135,7 @@ void testNewEmptyRopeKeepsAnEmptyString() {
     char buffer[getRopeContentLength(&rope) + 1];
     getRopeContent(&rope, buffer);
 
+    assert(strcmp(buffer, "") == 0);
     assert(strlen(buffer) == 0);
 
     destroyRope(&rope);
@@ -94,6 +149,10 @@ void testConcatenationOfEmptyRopesKeepsAnEmptyString() {
     Rope rope3;
 
     concatRopes(&rope1, &rope2, &rope3);
+    char buffer[getRopeContentLength(&rope3) + 1];
+    getRopeContent(&rope3, buffer);
+
+    assert(strcmp(buffer, "") == 0);
     assert(getRopeContentLength(&rope3) == 0);
 
     destroyRope(&rope3);
@@ -131,5 +190,8 @@ int main(int argc, char **argv) {
     testNewRopeHasLengthOfPassedInString();
     testConcatenationOfRopesHasSumOfLengths();
     testMultipleConcatenationOfRopesHasSumOfLengths();
+    testMultipleConcatenationOfRopesHasSumOfLengthsAgain();
+
+    printf("\n%d failures", failures);
     return 0;
 }
