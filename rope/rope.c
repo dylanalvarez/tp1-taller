@@ -15,11 +15,17 @@ size_t _getContentLengthFromRoot(RopeNode *node) {
     return total;
 }
 
+void
+_concatRopesFromRoots(RopeNode *left, RopeNode *right, RopeNode *new_root) {
+    new_root->left = left;
+    new_root->right = right;
+    new_root->weight = _getContentLengthFromRoot(new_root->left);
+
+}
+
 void concatRopes(Rope *left, Rope *right, Rope *new_rope) {
     createRope(new_rope, NULL);
-    new_rope->root->left = left->root;
-    new_rope->root->right = right->root;
-    new_rope->root->weight = _getContentLengthFromRoot(new_rope->root->left);
+    _concatRopesFromRoots(left->root, right->root, new_rope->root);
 }
 
 void splitRopes(Rope *source, int index, Rope *left, Rope *right) {}
