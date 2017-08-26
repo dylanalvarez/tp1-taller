@@ -20,7 +20,6 @@ _concatRopesFromRoots(RopeNode *left, RopeNode *right, RopeNode *new_root) {
     new_root->left = left;
     new_root->right = right;
     new_root->weight = _getContentLengthFromRoot(new_root->left);
-
 }
 
 void concatRopes(Rope *left, Rope *right, Rope *new_rope) {

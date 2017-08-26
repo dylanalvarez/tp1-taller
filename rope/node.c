@@ -1,4 +1,4 @@
-#include <stdbool.h>
+#include <string.h>
 #include "node.h"
 
 void createRopeNode(RopeNode *self, const char *string) {
@@ -12,7 +12,7 @@ void createRopeNode(RopeNode *self, const char *string) {
         self->weight = string_length;
         size_t string_size = string_length + 1;
         self->content = malloc(string_size);
-        strncpy(self->content, string, string_size);
+        strncpy(self->content, string, string_size); // NOLINT
     }
 }
 
