@@ -37,22 +37,35 @@ size_t getSubRopeContentLength(RopeNode *self) {
     return total;
 }
 
+void _removeContent(RopeNode *self) {
+    free(self->content);
+    self->content = NULL;
+}
+
 void
-splitRopeNode(RopeNode *source, size_t index, RopeNode *left, RopeNode *right) {
+splitRopeNode(RopeNode *self, size_t index, RopeNode *left, RopeNode *right) {
     _createEmptyRopeNode(left);
-    _setRopeNodeContent(left, source->content, 0, index);
+    _setRopeNodeContent(left, self->content, 0, index);
 
     _createEmptyRopeNode(right);
-    _setRopeNodeContent(right, source->content, index,
-                        strlen(source->content) - index);
+    _setRopeNodeContent(right, self->content, index,
+                        strlen(self->content) - index);
 
-    source->left = left;
-    source->right = right;
-    source->weight = left->weight;
-    free(source->content);
-    source->content = NULL;
+    appendLeftChild(self, left);
+    appendRightChild(self, right);
+
+    _removeContent(self);
+}
+
+void appendLeftChild(RopeNode *self, RopeNode *left_child) {
+    self->left = left_child;
+    self->weight = getSubRopeContentLength(self->left);
+}
+
+void appendRightChild(RopeNode *self, RopeNode *right_child) {
+    self->right = right_child;
 }
 
 void destroyRopeNode(RopeNode *self) {
-    if (self->content) { free(self->content); }
+    if (self->content) { _removeContent(self); }
 }

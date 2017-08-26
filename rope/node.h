@@ -21,20 +21,27 @@ bool isLeaf(RopeNode *self);
 
 // Pre:  source is a created rope node, it isLeaf(), left_length is a number
 //       between 0 and strlen(source->content), it has content.
-// Post: left_destination and right_destination are created, the first n
-//       characters being n = left_length go to left_destination and the rest,
-//       to right_destination.
+// Post: left and right are created, the first n characters being
+//       n = left_length go to left and the rest, to right.
 //       SOURCE, LEFT AND RIGHT WILL NEED TO BE DESTROYED
 void splitRopeNode(
-        RopeNode *source,
+        RopeNode *self,
         size_t left_length,
-        RopeNode *left_destination,
-        RopeNode *right_destination
+        RopeNode *left,
+        RopeNode *right
 );
 
 // Post: gets sum of string lengths contained inside self
 //       and its (direct and indirect) children.
 size_t getSubRopeContentLength(RopeNode *self);
+
+// Pre:  left_child can be NULL.
+// Post: self->left == left_child, self's weight is updated.
+void appendLeftChild(RopeNode *self, RopeNode *left_child);
+
+// Pre:  right_child can be NULL.
+// Post: self->right == right_child, self's weight is updated
+void appendRightChild(RopeNode *self, RopeNode *right_child);
 
 void destroyRopeNode(RopeNode *self);
 
