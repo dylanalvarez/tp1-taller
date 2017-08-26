@@ -247,6 +247,104 @@ testSplittingACreatedRopeWithMaxIndexReturnsOriginalContentAndEmptyString() {
     destroyRope(&rope3);
 }
 
+// https://en.wikipedia.org/wiki/Rope_(data_structure)
+//                        #/media/File:Vector_Rope_split.svg
+void testSplitWikipediaExample() {
+    Rope ropeE;
+    createRope(&ropeE, "Hello_");
+    Rope ropeF;
+    createRope(&ropeF, "my_");
+    Rope ropeJ;
+    createRope(&ropeJ, "na");
+    Rope ropeK;
+    createRope(&ropeK, "me_i");
+    Rope ropeM;
+    createRope(&ropeM, "s");
+    Rope ropeN;
+    createRope(&ropeN, "_Simon");
+    Rope rope_;
+    createRope(&rope_, "");
+    Rope ropeA;
+    Rope ropeB;
+    Rope ropeC;
+    Rope ropeD;
+    Rope ropeG;
+    Rope ropeH;
+
+    concatRopes(&ropeE, &ropeF, &ropeC);
+    concatRopes(&ropeJ, &ropeK, &ropeG);
+    concatRopes(&ropeM, &ropeN, &ropeH);
+    concatRopes(&ropeG, &ropeH, &ropeD);
+    concatRopes(&ropeC, &ropeD, &ropeB);
+    concatRopes(&ropeB, &rope_, &ropeA);
+
+    Rope leftDestination;
+    Rope rightDestination;
+
+    splitRope(&ropeA, 11, &leftDestination, &rightDestination);
+
+    char leftBuffer[getRopeContentLength(&leftDestination) + 1];
+    getRopeContent(&leftDestination, leftBuffer);
+    assert(strcmp(leftBuffer, "Hello_my_na") == 0);
+    assert(getRopeContentLength(&leftDestination) == 11);
+
+    char rightBuffer[getRopeContentLength(&rightDestination) + 1];
+    getRopeContent(&rightDestination, rightBuffer);
+    assert(strcmp(rightBuffer, "me_is_Simon") == 0);
+    assert(getRopeContentLength(&rightDestination) == 11);
+
+    destroyRope(&leftDestination);
+    destroyRope(&rightDestination);
+}
+
+void testSplitWikipediaExampleThisTimeNeedingToSplitANode() {
+    Rope ropeE;
+    createRope(&ropeE, "Hello_");
+    Rope ropeF;
+    createRope(&ropeF, "my_");
+    Rope ropeJ;
+    createRope(&ropeJ, "na");
+    Rope ropeK;
+    createRope(&ropeK, "me_i");
+    Rope ropeM;
+    createRope(&ropeM, "s");
+    Rope ropeN;
+    createRope(&ropeN, "_Simon");
+    Rope rope_;
+    createRope(&rope_, "");
+    Rope ropeA;
+    Rope ropeB;
+    Rope ropeC;
+    Rope ropeD;
+    Rope ropeG;
+    Rope ropeH;
+
+    concatRopes(&ropeE, &ropeF, &ropeC);
+    concatRopes(&ropeJ, &ropeK, &ropeG);
+    concatRopes(&ropeM, &ropeN, &ropeH);
+    concatRopes(&ropeG, &ropeH, &ropeD);
+    concatRopes(&ropeC, &ropeD, &ropeB);
+    concatRopes(&ropeB, &rope_, &ropeA);
+
+    Rope leftDestination;
+    Rope rightDestination;
+
+    splitRope(&ropeA, 10, &leftDestination, &rightDestination);
+
+    char leftBuffer[getRopeContentLength(&leftDestination) + 1];
+    getRopeContent(&leftDestination, leftBuffer);
+    assert(strcmp(leftBuffer, "Hello_my_n") == 0);
+    assert(getRopeContentLength(&leftDestination) == 10);
+
+    char rightBuffer[getRopeContentLength(&rightDestination) + 1];
+    getRopeContent(&rightDestination, rightBuffer);
+    assert(strcmp(rightBuffer, "ame_is_Simon") == 0);
+    assert(getRopeContentLength(&rightDestination) == 12);
+
+    destroyRope(&leftDestination);
+    destroyRope(&rightDestination);
+}
+
 // NODE TESTS
 
 void testNewRopeNodeHasWeightOfString() {
@@ -284,6 +382,8 @@ int main(int argc, char **argv) {
     testSplittingACreatedRopeDividesThePassedInString();
     testSplittingACreatedRopeWithIndex0ReturnsEmptyStringAndOriginalContent();
     testSplittingACreatedRopeWithMaxIndexReturnsOriginalContentAndEmptyString();
+    testSplitWikipediaExample();
+    testSplitWikipediaExampleThisTimeNeedingToSplitANode();
 
     printf("\n%d failures", failures);
     return 0;
