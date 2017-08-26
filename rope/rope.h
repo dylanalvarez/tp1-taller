@@ -23,8 +23,8 @@ void concatRopes(
 //       getRopeContentLength(&source)
 // Post: source is destroyed, left and right are created, the first n characters
 //       being n = left_length go to left and the rest, to right.
-void splitRopes(
-        Rope *source, int left_length,
+void splitRope(
+        Rope *source, size_t left_length,
         Rope *left_destination,
         Rope *right_destination
 );

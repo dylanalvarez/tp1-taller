@@ -158,6 +158,50 @@ void testConcatenationOfEmptyRopesKeepsAnEmptyString() {
     destroyRope(&rope3);
 }
 
+void testSplittingAnEmptyRopeReturnsTwoEmptyLengths() {
+    Rope rope1;
+    createRope(&rope1, NULL);
+    Rope rope2;
+    Rope rope3;
+
+    splitRope(&rope1, 0, &rope2, &rope3);
+
+    char buffer2[getRopeContentLength(&rope2) + 1];
+    getRopeContent(&rope2, buffer2);
+    assert(strcmp(buffer2, "") == 0);
+    assert(getRopeContentLength(&rope2) == 0);
+
+    char buffer3[getRopeContentLength(&rope2) + 1];
+    getRopeContent(&rope3, buffer3);
+    assert(strcmp(buffer3, "") == 0);
+    assert(getRopeContentLength(&rope3) == 0);
+
+    destroyRope(&rope2);
+    destroyRope(&rope3);
+}
+
+void testSplittingACreatedRopeDividesThePassedInString() {
+    Rope rope1;
+    createRope(&rope1, "qwerty");
+    Rope rope2;
+    Rope rope3;
+
+    splitRope(&rope1, 2, &rope2, &rope3);
+
+    char buffer2[getRopeContentLength(&rope2) + 1];
+    getRopeContent(&rope2, buffer2);
+    assert(strcmp(buffer2, "qw") == 0);
+    assert(getRopeContentLength(&rope2) == 2);
+
+    char buffer3[getRopeContentLength(&rope2) + 1];
+    getRopeContent(&rope3, buffer3);
+    assert(strcmp(buffer3, "erty") == 0);
+    assert(getRopeContentLength(&rope3) == 4);
+
+    destroyRope(&rope2);
+    destroyRope(&rope3);
+}
+
 // NODE TESTS
 
 void testNewRopeNodeHasWeightOfString() {
@@ -191,6 +235,8 @@ int main(int argc, char **argv) {
     testConcatenationOfRopesHasSumOfLengths();
     testMultipleConcatenationOfRopesHasSumOfLengths();
     testMultipleConcatenationOfRopesHasSumOfLengthsAgain();
+    testSplittingAnEmptyRopeReturnsTwoEmptyLengths();
+    testSplittingACreatedRopeDividesThePassedInString();
 
     printf("\n%d failures", failures);
     return 0;

@@ -28,7 +28,56 @@ void concatRopes(Rope *left, Rope *right, Rope *new_rope) {
     _concatRopesFromRoots(left->root, right->root, new_rope->root);
 }
 
-void splitRopes(Rope *source, int index, Rope *left, Rope *right) {}
+void _updateTemp(RopeNode *node_to_append, RopeNode **temp) {
+    if (!node_to_append) {
+        return;
+    }
+    if (!*temp) {
+        *temp = node_to_append;
+        return;
+    }
+    RopeNode *new_temp = malloc(sizeof(RopeNode));
+    _concatRopesFromRoots(node_to_append, *temp, new_temp);
+    *temp = new_temp;
+}
+
+
+RopeNode *_splitRopeFromRoot(RopeNode *node, size_t index, RopeNode **temp) {
+    if (isLeaf(node)) {
+        if (!node->content) { return NULL; }
+        RopeNode *left = malloc(sizeof(RopeNode));
+        RopeNode *right = malloc(sizeof(RopeNode));
+        splitRopeNode(node, index, left, right);
+        _updateTemp(_splitRopeFromRoot(node, index, temp), temp);
+        return NULL;
+    }
+    if (node->weight < index) {
+        _splitRopeFromRoot(node->right, index - node->weight, temp);
+        _updateTemp(node->left, temp);
+        node->left = NULL;
+    }
+    if (node->weight == index) {
+        RopeNode *left = node->left;
+        node->left = NULL;
+        node->weight = 0;
+        return left;
+    }
+    if (node->weight > index) {
+        _updateTemp(_splitRopeFromRoot(node->left, index, temp), temp);
+    }
+    return NULL;
+}
+
+void splitRope(Rope *source, size_t index, Rope *left, Rope *right) {
+    RopeNode *temp = NULL;
+    _splitRopeFromRoot(source->root, index, &temp);
+    if (!temp) {
+        temp = malloc(sizeof(RopeNode));
+        createRopeNode(temp, NULL);
+    }
+    left->root = temp;
+    right->root = source->root;
+}
 
 size_t getRopeContentLength(Rope *self) {
     return _getContentLengthFromRoot(self->root);
