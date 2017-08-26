@@ -1,18 +1,25 @@
 #include <string.h>
 #include "node.h"
 
-void createRopeNode(RopeNode *self, const char *string) {
+static void _createEmptyRopeNode(RopeNode *self) {
     self->left = NULL;
     self->right = NULL;
-    if (string == NULL) {
-        self->content = NULL;
-        self->weight = 0;
-    } else {
-        size_t string_length = strlen(string);
-        self->weight = string_length;
-        size_t string_size = string_length + 1;
-        self->content = malloc(string_size);
-        strncpy(self->content, string, string_size); // NOLINT
+    self->weight = 0;
+    self->content = NULL;
+}
+
+static void _setRopeNodeContent(RopeNode *self, const char *string) {
+    size_t string_length = strlen(string);
+    self->weight = string_length;
+    self->content = malloc(string_length + 1);
+    strncpy(self->content, string, string_length + 1); // NOLINT
+
+}
+
+void createRopeNode(RopeNode *self, const char *string) {
+    _createEmptyRopeNode(self);
+    if (string) {
+        _setRopeNodeContent(self, string);
     }
 }
 
