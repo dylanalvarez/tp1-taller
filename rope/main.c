@@ -8,6 +8,7 @@ char buffer2[50];
 char buffer3[50];
 char leftBuffer[50];
 char rightBuffer[50];
+
 void assert(bool condition) {
     condition ? printf("OK\n") : printf("FAILED!\n");
     if (!condition) {
@@ -327,6 +328,80 @@ void testSplitWikipediaExampleThisTimeNeedingToSplitANode() {
     destroyRope(&rightDestination);
 }
 
+void testSplitWikipediaExampleThisTimeCheckingEveryCharacter() {
+    Rope ropeE;
+    createRope(&ropeE, "Hello_");
+    Rope ropeF;
+    createRope(&ropeF, "my_");
+    Rope ropeJ;
+    createRope(&ropeJ, "na");
+    Rope ropeK;
+    createRope(&ropeK, "me_i");
+    Rope ropeM;
+    createRope(&ropeM, "s");
+    Rope ropeN;
+    createRope(&ropeN, "_Simon");
+    Rope rope_;
+    createRope(&rope_, "");
+    Rope ropeA;
+    Rope ropeB;
+    Rope ropeC;
+    Rope ropeD;
+    Rope ropeG;
+    Rope ropeH;
+
+    concatRopes(&ropeE, &ropeF, &ropeC);
+    concatRopes(&ropeJ, &ropeK, &ropeG);
+    concatRopes(&ropeM, &ropeN, &ropeH);
+    concatRopes(&ropeG, &ropeH, &ropeD);
+    concatRopes(&ropeC, &ropeD, &ropeB);
+    concatRopes(&ropeB, &rope_, &ropeA);
+
+    char *content = "Hello_my_name_is_Simon";
+    bool correct = true;
+    for (size_t i = 0; i < getRopeContentLength(&ropeA); i++) {
+        if (content[i] != getRopeContentAtIndex(&ropeA, i)) {
+            correct = false;
+        }
+    }
+    assert(correct);
+
+    destroyRope(&ropeA);
+}
+
+void testInsertInFirstIndex() {
+    Rope rope;
+    createRope(&rope, "example");
+    insert(&rope, "qwe", 0);
+    getRopeContent(&rope, buffer);
+
+    assert(strcmp(buffer, "qweexample") == 0);
+
+    destroyRope(&rope);
+}
+
+void testInsertInLastIndex() {
+    Rope rope;
+    createRope(&rope, "example");
+    insert(&rope, "qwe", 7);
+    getRopeContent(&rope, buffer);
+
+    assert(strcmp(buffer, "exampleqwe") == 0);
+
+    destroyRope(&rope);
+}
+
+void testInsertInTheMiddle() {
+    Rope rope;
+    createRope(&rope, "example");
+    insert(&rope, "qwe", 3);
+    getRopeContent(&rope, buffer);
+
+    assert(strcmp(buffer, "exaqwemple") == 0);
+
+    destroyRope(&rope);
+}
+
 // NODE TESTS
 
 void testNewRopeNodeHasWeightOfString() {
@@ -366,6 +441,10 @@ int main(int argc, char **argv) {
     testSplittingACreatedRopeWithMaxIndexReturnsOriginalContentAndEmptyString();
     testSplitWikipediaExample();
     testSplitWikipediaExampleThisTimeNeedingToSplitANode();
+    testSplitWikipediaExampleThisTimeCheckingEveryCharacter();
+    testInsertInFirstIndex();
+    testInsertInLastIndex();
+    testInsertInTheMiddle();
 
     printf("\n%d failures", failures);
     return 0;

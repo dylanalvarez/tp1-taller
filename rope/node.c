@@ -20,7 +20,7 @@ _setRopeNodeContent(RopeNode *self, const char *string,
 void createRopeNode(RopeNode *self, const char *string) {
     createEmptyRopeNode(self);
     if (string) {
-        _setRopeNodeContent(self, string, 0, strlen(string));
+        _setRopeNodeContent(self, string, 0, strlen(string)); // NOLINT
     }
 }
 

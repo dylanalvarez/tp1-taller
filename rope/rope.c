@@ -82,6 +82,19 @@ void splitRope(Rope *source, size_t characters_to_left,
     right->root = source->root;
 }
 
+void insert(Rope *self, const char *content, size_t index) {
+    Rope left;
+    Rope center;
+    Rope right;
+    Rope result1;
+    Rope result2;
+    splitRope(self, index, &left, &right);
+    createRope(&center, content);
+    concatRopes(&left, &center, &result1);
+    concatRopes(&result1, &right, &result2);
+    self->root = result2.root;
+}
+
 size_t getRopeContentLength(Rope *self) {
     return getSubRopeContentLength(self->root);
 }
@@ -106,6 +119,20 @@ void getRopeContent(Rope *self, char *buffer) {
     int position = 0;
     buffer[0] = 0;
     _fillBuffer(self->root, buffer, &position);
+}
+
+static char _getRopeContentAtIndex(RopeNode *node, size_t index) {
+    if (node->weight <= index) {
+        return _getRopeContentAtIndex(node->right, index - node->weight);
+    }
+    if (node->left) {
+        return _getRopeContentAtIndex(node->left, index);
+    }
+    return node->content[index];
+}
+
+char getRopeContentAtIndex(Rope *self, size_t index) {
+    return _getRopeContentAtIndex(self->root, index);
 }
 
 static void _destroyNode(RopeNode *node) {

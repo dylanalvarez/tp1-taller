@@ -29,6 +29,11 @@ void splitRope(
         Rope *right_destination
 );
 
+// Pre:  index is a number between 0 and getRopeContentLength(&self)
+// Post: the passed in string is inserted beginning in (and including)
+//       position "index"
+void insert(Rope *self, const char *content, size_t index);
+
 // Post: returns length of the string contained within self
 //       it's faster than calling strlen on getRopeContent
 size_t getRopeContentLength(Rope *self);
@@ -36,6 +41,9 @@ size_t getRopeContentLength(Rope *self);
 // Pre:  buffer's length is at least getRopeContentLength(&self) + 1 bytes
 // Post: buffer contains the string contained within self
 void getRopeContent(Rope *self, char *buffer);
+
+//Pre:  index is a number between 0 and getRopeContentLength(&self)
+char getRopeContentAtIndex(Rope *self, size_t index);
 
 void destroyRope(Rope *self);
 
