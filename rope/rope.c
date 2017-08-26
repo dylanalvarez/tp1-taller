@@ -18,57 +18,67 @@ void concatRopes(Rope *left, Rope *right, Rope *new_rope) {
     _concatRopesFromRoots(left->root, right->root, new_rope->root);
 }
 
-static void _updateTemp(RopeNode *node_to_append, RopeNode **temp) {
+static void _appendToLeft(RopeNode *node_to_append, RopeNode **left_root) {
     if (!node_to_append) {
         return;
     }
-    if (!*temp) {
-        *temp = node_to_append;
+    if (!*left_root) {
+        *left_root = node_to_append;
         return;
     }
-    RopeNode *new_temp = malloc(sizeof(RopeNode));
-    _concatRopesFromRoots(node_to_append, *temp, new_temp);
-    *temp = new_temp;
+    RopeNode *new_left_root = malloc(sizeof(RopeNode));
+    _concatRopesFromRoots(node_to_append, *left_root, new_left_root);
+    *left_root = new_left_root;
 }
 
-
 static RopeNode *
-_splitRopeFromRoot(RopeNode *node, size_t index, RopeNode **temp) {
+_moveFirstCharactersToLeftRoot(RopeNode *node,
+                               size_t characters_to_left,
+                               RopeNode **left_root) {
     if (isLeaf(node)) {
         if (!node->content) { return NULL; }
+
         RopeNode *left = malloc(sizeof(RopeNode));
         RopeNode *right = malloc(sizeof(RopeNode));
-        splitRopeNode(node, index, left, right);
-        _updateTemp(_splitRopeFromRoot(node, index, temp), temp);
-        return NULL;
-    }
-    if (node->weight < index) {
-        _splitRopeFromRoot(node->right, index - node->weight, temp);
-        _updateTemp(node->left, temp);
-        node->left = NULL;
-        node->weight = 0;
-    }
-    if (node->weight == index) {
-        RopeNode *left = node->left;
-        node->left = NULL;
-        node->weight = 0;
-        return left;
-    }
-    if (node->weight > index) {
-        _updateTemp(_splitRopeFromRoot(node->left, index, temp), temp);
+        splitRopeNode(node, characters_to_left, left, right);
+
+        RopeNode *to_left = _moveFirstCharactersToLeftRoot(node,
+                                                           characters_to_left,
+                                                           left_root);
+        _appendToLeft(to_left, left_root);
+    } else if (node->weight < characters_to_left) {
+        _moveFirstCharactersToLeftRoot(node->right,
+                                       characters_to_left - node->weight,
+                                       left_root);
+        _appendToLeft(node->left, left_root);
+
+        appendLeftChild(node, NULL);
+    } else if (node->weight > characters_to_left) {
+        RopeNode *to_left = _moveFirstCharactersToLeftRoot(node->left,
+                                                           characters_to_left,
+                                                           left_root);
+        _appendToLeft(to_left, left_root);
+
         node->weight = getSubRopeContentLength(node->left);
+    } else { // node->weight == characters_to_left
+        RopeNode *left = node->left;
+        appendLeftChild(node, NULL);
+        return left;
     }
     return NULL;
 }
 
-void splitRope(Rope *source, size_t index, Rope *left, Rope *right) {
-    RopeNode *temp = NULL;
-    _splitRopeFromRoot(source->root, index, &temp);
-    if (!temp) {
-        temp = malloc(sizeof(RopeNode));
-        createRopeNode(temp, NULL);
+void splitRope(Rope *source, size_t characters_to_left,
+               Rope *left, Rope *right) {
+    RopeNode *left_root = NULL;
+    _moveFirstCharactersToLeftRoot(source->root,
+                                   characters_to_left,
+                                   &left_root);
+    if (!left_root) {
+        left_root = malloc(sizeof(RopeNode));
+        createEmptyRopeNode(left_root);
     }
-    left->root = temp;
+    left->root = left_root;
     right->root = source->root;
 }
 
@@ -94,7 +104,7 @@ static void _fillBuffer(RopeNode *node, char *buffer, int *position) {
 
 void getRopeContent(Rope *self, char *buffer) {
     int position = 0;
-    buffer[0] = (char) 0;
+    buffer[0] = 0;
     _fillBuffer(self->root, buffer, &position);
 }
 
