@@ -6,7 +6,7 @@ void createRope(Rope *self, const char *content) {
     createRopeNode(self->root, content);
 }
 
-size_t _getContentLengthFromRoot(RopeNode *node) {
+static size_t _getContentLengthFromRoot(RopeNode *node) {
     size_t total = 0;
     while (node) {
         total += node->weight;
@@ -15,7 +15,7 @@ size_t _getContentLengthFromRoot(RopeNode *node) {
     return total;
 }
 
-void
+static void
 _concatRopesFromRoots(RopeNode *left, RopeNode *right, RopeNode *new_root) {
     new_root->left = left;
     new_root->right = right;
@@ -28,7 +28,7 @@ void concatRopes(Rope *left, Rope *right, Rope *new_rope) {
     _concatRopesFromRoots(left->root, right->root, new_rope->root);
 }
 
-void _updateTemp(RopeNode *node_to_append, RopeNode **temp) {
+static void _updateTemp(RopeNode *node_to_append, RopeNode **temp) {
     if (!node_to_append) {
         return;
     }
@@ -42,7 +42,8 @@ void _updateTemp(RopeNode *node_to_append, RopeNode **temp) {
 }
 
 
-RopeNode *_splitRopeFromRoot(RopeNode *node, size_t index, RopeNode **temp) {
+static RopeNode *
+_splitRopeFromRoot(RopeNode *node, size_t index, RopeNode **temp) {
     if (isLeaf(node)) {
         if (!node->content) { return NULL; }
         RopeNode *left = malloc(sizeof(RopeNode));
@@ -107,7 +108,7 @@ void getRopeContent(Rope *self, char *buffer) {
     _fillBuffer(self->root, buffer, &position);
 }
 
-void _destroyNode(RopeNode *node) {
+static void _destroyNode(RopeNode *node) {
     if (!node) { return; }
     _destroyNode(node->left);
     _destroyNode(node->right);
