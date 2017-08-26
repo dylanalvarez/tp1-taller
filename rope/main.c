@@ -2,10 +2,12 @@
 #include <stdbool.h>
 #include "rope.h"
 
-// GENERIC FUNCTIONS
-
 int failures = 0;
-
+char buffer[50];
+char buffer2[50];
+char buffer3[50];
+char leftBuffer[50];
+char rightBuffer[50];
 void assert(bool condition) {
     condition ? printf("OK\n") : printf("FAILED!\n");
     if (!condition) {
@@ -19,7 +21,6 @@ void testNewEmptyRopeHasNoLength() {
     Rope rope;
     createRope(&rope, NULL);
 
-    char buffer[getRopeContentLength(&rope) + 1];
     getRopeContent(&rope, buffer);
 
     assert(strcmp(buffer, "") == 0);
@@ -31,7 +32,6 @@ void testNewEmptyRopeHasNoLength() {
 void testNewRopeHasLengthOfPassedInString() {
     Rope rope;
     createRope(&rope, "example");
-    char buffer[getRopeContentLength(&rope) + 1];
     getRopeContent(&rope, buffer);
 
     assert(strcmp(buffer, "example") == 0);
@@ -49,7 +49,6 @@ void testConcatenationOfEmptyRopesHasNoLength() {
 
     concatRopes(&rope1, &rope2, &rope3);
 
-    char buffer[getRopeContentLength(&rope3) + 1];
     getRopeContent(&rope3, buffer);
 
     assert(strcmp(buffer, "") == 0);
@@ -67,7 +66,6 @@ void testConcatenationOfRopesHasSumOfLengths() {
 
     concatRopes(&rope1, &rope2, &rope3);
 
-    char buffer[getRopeContentLength(&rope3) + 1];
     getRopeContent(&rope3, buffer);
 
     assert(strcmp(buffer, "123456") == 0);
@@ -93,7 +91,6 @@ void testMultipleConcatenationOfRopesHasSumOfLengths() {
     concatRopes(&rope3, &rope4, &rope6);
     concatRopes(&rope5, &rope6, &rope7);
 
-    char buffer[getRopeContentLength(&rope7) + 1];
     getRopeContent(&rope7, buffer);
 
     assert(strcmp(buffer, "1234567890") == 0);
@@ -120,7 +117,6 @@ void testMultipleConcatenationOfRopesHasSumOfLengthsAgain() {
     concatRopes(&rope3, &rope4, &rope6);
     concatRopes(&rope5, &rope6, &rope7);
 
-    char buffer[getRopeContentLength(&rope7) + 1];
     getRopeContent(&rope7, buffer);
 
     assert(strcmp(buffer, "1224567") == 0);
@@ -132,7 +128,6 @@ void testMultipleConcatenationOfRopesHasSumOfLengthsAgain() {
 void testNewEmptyRopeKeepsAnEmptyString() {
     Rope rope;
     createRope(&rope, NULL);
-    char buffer[getRopeContentLength(&rope) + 1];
     getRopeContent(&rope, buffer);
 
     assert(strcmp(buffer, "") == 0);
@@ -149,7 +144,6 @@ void testConcatenationOfEmptyRopesKeepsAnEmptyString() {
     Rope rope3;
 
     concatRopes(&rope1, &rope2, &rope3);
-    char buffer[getRopeContentLength(&rope3) + 1];
     getRopeContent(&rope3, buffer);
 
     assert(strcmp(buffer, "") == 0);
@@ -166,12 +160,10 @@ void testSplittingAnEmptyRopeReturnsTwoEmptyLengths() {
 
     splitRope(&rope1, 0, &rope2, &rope3);
 
-    char buffer2[getRopeContentLength(&rope2) + 1];
     getRopeContent(&rope2, buffer2);
     assert(strcmp(buffer2, "") == 0);
     assert(getRopeContentLength(&rope2) == 0);
 
-    char buffer3[getRopeContentLength(&rope2) + 1];
     getRopeContent(&rope3, buffer3);
     assert(strcmp(buffer3, "") == 0);
     assert(getRopeContentLength(&rope3) == 0);
@@ -188,12 +180,10 @@ void testSplittingACreatedRopeDividesThePassedInString() {
 
     splitRope(&rope1, 2, &rope2, &rope3);
 
-    char buffer2[getRopeContentLength(&rope2) + 1];
     getRopeContent(&rope2, buffer2);
     assert(strcmp(buffer2, "qw") == 0);
     assert(getRopeContentLength(&rope2) == 2);
 
-    char buffer3[getRopeContentLength(&rope2) + 1];
     getRopeContent(&rope3, buffer3);
     assert(strcmp(buffer3, "erty") == 0);
     assert(getRopeContentLength(&rope3) == 4);
@@ -210,12 +200,10 @@ void testSplittingACreatedRopeWithIndex0ReturnsEmptyStringAndOriginalContent() {
 
     splitRope(&rope1, 0, &rope2, &rope3);
 
-    char buffer2[getRopeContentLength(&rope2) + 1];
     getRopeContent(&rope2, buffer2);
     assert(strcmp(buffer2, "") == 0);
     assert(getRopeContentLength(&rope2) == 0);
 
-    char buffer3[getRopeContentLength(&rope2) + 1];
     getRopeContent(&rope3, buffer3);
     assert(strcmp(buffer3, "qwerty") == 0);
     assert(getRopeContentLength(&rope3) == 6);
@@ -233,12 +221,10 @@ testSplittingACreatedRopeWithMaxIndexReturnsOriginalContentAndEmptyString() {
 
     splitRope(&rope1, 6, &rope2, &rope3);
 
-    char buffer2[getRopeContentLength(&rope2) + 1];
     getRopeContent(&rope2, buffer2);
     assert(strcmp(buffer2, "qwerty") == 0);
     assert(getRopeContentLength(&rope2) == 6);
 
-    char buffer3[getRopeContentLength(&rope2) + 1];
     getRopeContent(&rope3, buffer3);
     assert(strcmp(buffer3, "") == 0);
     assert(getRopeContentLength(&rope3) == 0);
@@ -283,12 +269,10 @@ void testSplitWikipediaExample() {
 
     splitRope(&ropeA, 11, &leftDestination, &rightDestination);
 
-    char leftBuffer[getRopeContentLength(&leftDestination) + 1];
     getRopeContent(&leftDestination, leftBuffer);
     assert(strcmp(leftBuffer, "Hello_my_na") == 0);
     assert(getRopeContentLength(&leftDestination) == 11);
 
-    char rightBuffer[getRopeContentLength(&rightDestination) + 1];
     getRopeContent(&rightDestination, rightBuffer);
     assert(strcmp(rightBuffer, "me_is_Simon") == 0);
     assert(getRopeContentLength(&rightDestination) == 11);
@@ -331,12 +315,10 @@ void testSplitWikipediaExampleThisTimeNeedingToSplitANode() {
 
     splitRope(&ropeA, 10, &leftDestination, &rightDestination);
 
-    char leftBuffer[getRopeContentLength(&leftDestination) + 1];
     getRopeContent(&leftDestination, leftBuffer);
     assert(strcmp(leftBuffer, "Hello_my_n") == 0);
     assert(getRopeContentLength(&leftDestination) == 10);
 
-    char rightBuffer[getRopeContentLength(&rightDestination) + 1];
     getRopeContent(&rightDestination, rightBuffer);
     assert(strcmp(rightBuffer, "ame_is_Simon") == 0);
     assert(getRopeContentLength(&rightDestination) == 12);
