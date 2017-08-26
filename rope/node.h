@@ -21,11 +21,13 @@ bool isLeaf(RopeNode *self);
 
 // Pre:  source is a created rope node, it isLeaf(), left_length is a number
 //       between 0 and strlen(source->content), it has content.
-// Post: left and right are created, the first n characters
-//       being n = left_length go to left and the rest, to right.
-//       SOURCE NEEDS TO BE DESTROYED
+// Post: left_destination and right_destination are created, the first n
+//       characters being n = left_length go to left_destination and the rest,
+//       to right_destination.
+//       SOURCE, LEFT AND RIGHT WILL NEED TO BE DESTROYED
 void splitRopeNode(
-        RopeNode *source, size_t left_length,
+        RopeNode *source,
+        size_t left_length,
         RopeNode *left_destination,
         RopeNode *right_destination
 );
