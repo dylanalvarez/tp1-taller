@@ -14,7 +14,7 @@ _setRopeNodeContent(RopeNode *self, const char *string,
     self->weight = character_count;
     self->content = malloc(character_count + 1);
     memcpy(self->content, string + initial_position, character_count); // NOLINT
-    self->content[character_count - initial_position] = 0;
+    self->content[character_count] = 0;
 }
 
 void createRopeNode(RopeNode *self, const char *string) {
@@ -28,17 +28,24 @@ bool isLeaf(RopeNode *self) {
     return !(self->left || self->right);
 }
 
+size_t getContentLengthFromRoot(RopeNode *self) {
+    size_t total = 0;
+    while (self) {
+        total += self->weight;
+        self = self->right;
+    }
+    return total;
+}
+
 void
 splitRopeNode(RopeNode *source, size_t index, RopeNode *left, RopeNode *right) {
-    size_t string_length = strlen(source->content);
-    char right_string[string_length - index + 1];
-    memcpy(right_string, source->content + index, string_length - index);
-    right_string[string_length - index] = 0;
-
     _createEmptyRopeNode(left);
     _setRopeNodeContent(left, source->content, 0, index);
 
-    createRopeNode(right, right_string);
+    _createEmptyRopeNode(right);
+    _setRopeNodeContent(right, source->content, index,
+                        strlen(source->content) - index);
+
     source->left = left;
     source->right = right;
     source->weight = left->weight;
