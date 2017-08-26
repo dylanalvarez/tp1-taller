@@ -34,6 +34,12 @@ void splitRope(
 //       position "index"
 void insert(Rope *self, const char *content, size_t index);
 
+// Pre:  from < to, both "from" and "to" are numbers between 0 and
+//       getRopeContentLength(&self)
+// Post: the rope's characters in positions between "from" and (not including)
+//       "to" are removed.
+void delete(Rope *self, size_t from, size_t to);
+
 // Post: returns length of the string contained within self
 //       it's faster than calling strlen on getRopeContent
 size_t getRopeContentLength(Rope *self);

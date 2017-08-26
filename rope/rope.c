@@ -91,11 +91,27 @@ void insert(Rope *self, const char *content, size_t index) {
     createRope(&center, content);
 
     Rope left_plus_center;
-    Rope new_root;
+    Rope new_self;
 
     concatRopes(&left, &center, &left_plus_center);
-    concatRopes(&left_plus_center, &right, &new_root);
-    self->root = new_root.root;
+    concatRopes(&left_plus_center, &right, &new_self);
+    self->root = new_self.root;
+}
+
+void delete(Rope *self, size_t from, size_t to) {
+    Rope left;
+    Rope center;
+    Rope right;
+
+    Rope temp;
+    splitRope(self, from, &left, &temp);
+    splitRope(&temp, to - from, &center, &right);
+
+    Rope new_self;
+    concatRopes(&left, &right, &new_self);
+    self->root = new_self.root;
+
+    destroyRope(&center);
 }
 
 size_t getRopeContentLength(Rope *self) {

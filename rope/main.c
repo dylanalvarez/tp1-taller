@@ -402,6 +402,42 @@ void testInsertInTheMiddle() {
     destroyRope(&rope);
 }
 
+void testDeleteAllCharacters() {
+    Rope rope;
+    createRope(&rope, "example");
+    delete(&rope, 0, 7);
+    getRopeContent(&rope, buffer);
+
+    assert(getRopeContentLength(&rope) == 0);
+    assert(strcmp(buffer, "") == 0);
+
+    destroyRope(&rope);
+}
+
+void testDeleteLastCharacters() {
+    Rope rope;
+    createRope(&rope, "example");
+    delete(&rope, 2, 7);
+    getRopeContent(&rope, buffer);
+
+    assert(getRopeContentLength(&rope) == 2);
+    assert(strcmp(buffer, "ex") == 0);
+
+    destroyRope(&rope);
+}
+
+void testDeleteFirstCharacters() {
+    Rope rope;
+    createRope(&rope, "example");
+    delete(&rope, 0, 3);
+    getRopeContent(&rope, buffer);
+
+    assert(getRopeContentLength(&rope) == 4);
+    assert(strcmp(buffer, "mple") == 0);
+
+    destroyRope(&rope);
+}
+
 // NODE TESTS
 
 void testNewRopeNodeHasWeightOfString() {
@@ -445,6 +481,9 @@ int main(int argc, char **argv) {
     testInsertInFirstIndex();
     testInsertInLastIndex();
     testInsertInTheMiddle();
+    testDeleteAllCharacters();
+    testDeleteLastCharacters();
+    testDeleteFirstCharacters();
 
     printf("\n%d failures", failures);
     return 0;
