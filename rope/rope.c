@@ -84,15 +84,18 @@ void splitRope(Rope *source, size_t characters_to_left,
 
 void insert(Rope *self, const char *content, size_t index) {
     Rope left;
-    Rope center;
     Rope right;
-    Rope result1;
-    Rope result2;
     splitRope(self, index, &left, &right);
+
+    Rope center;
     createRope(&center, content);
-    concatRopes(&left, &center, &result1);
-    concatRopes(&result1, &right, &result2);
-    self->root = result2.root;
+
+    Rope left_plus_center;
+    Rope new_root;
+
+    concatRopes(&left, &center, &left_plus_center);
+    concatRopes(&left_plus_center, &right, &new_root);
+    self->root = new_root.root;
 }
 
 size_t getRopeContentLength(Rope *self) {
