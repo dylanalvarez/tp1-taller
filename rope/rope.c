@@ -12,7 +12,7 @@ _concatRopesFromRoots(RopeNode *left, RopeNode *right, RopeNode *new_root) {
     new_root->left = left;
     new_root->right = right;
     new_root->content = NULL;
-    new_root->weight = getContentLengthFromRoot(new_root->left);
+    new_root->weight = getSubRopeContentLength(new_root->left);
 }
 
 void concatRopes(Rope *left, Rope *right, Rope *new_rope) {
@@ -58,7 +58,7 @@ _splitRopeFromRoot(RopeNode *node, size_t index, RopeNode **temp) {
     }
     if (node->weight > index) {
         _updateTemp(_splitRopeFromRoot(node->left, index, temp), temp);
-        node->weight = getContentLengthFromRoot(node->left);
+        node->weight = getSubRopeContentLength(node->left);
     }
     return NULL;
 }
@@ -75,7 +75,7 @@ void splitRope(Rope *source, size_t index, Rope *left, Rope *right) {
 }
 
 size_t getRopeContentLength(Rope *self) {
-    return getContentLengthFromRoot(self->root);
+    return getSubRopeContentLength(self->root);
 }
 
 static void _fillBuffer(RopeNode *node, char *buffer, int *position) {

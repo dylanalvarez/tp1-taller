@@ -28,7 +28,7 @@ bool isLeaf(RopeNode *self) {
     return !(self->left || self->right);
 }
 
-size_t getContentLengthFromRoot(RopeNode *self) {
+size_t getSubRopeContentLength(RopeNode *self) {
     size_t total = 0;
     while (self) {
         total += self->weight;

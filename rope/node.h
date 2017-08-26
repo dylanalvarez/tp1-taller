@@ -34,7 +34,7 @@ void splitRopeNode(
 
 // Post: gets sum of string lengths contained inside self
 //       and its (direct and indirect) children.
-size_t getContentLengthFromRoot(RopeNode *self);
+size_t getSubRopeContentLength(RopeNode *self);
 
 void destroyRopeNode(RopeNode *self);
 
