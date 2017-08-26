@@ -224,6 +224,29 @@ void testSplittingACreatedRopeWithIndex0ReturnsEmptyStringAndOriginalContent() {
     destroyRope(&rope3);
 }
 
+void
+testSplittingACreatedRopeWithMaxIndexReturnsOriginalContentAndEmptyString() {
+    Rope rope1;
+    createRope(&rope1, "qwerty");
+    Rope rope2;
+    Rope rope3;
+
+    splitRope(&rope1, 6, &rope2, &rope3);
+
+    char buffer2[getRopeContentLength(&rope2) + 1];
+    getRopeContent(&rope2, buffer2);
+    assert(strcmp(buffer2, "qwerty") == 0);
+    assert(getRopeContentLength(&rope2) == 6);
+
+    char buffer3[getRopeContentLength(&rope2) + 1];
+    getRopeContent(&rope3, buffer3);
+    assert(strcmp(buffer3, "") == 0);
+    assert(getRopeContentLength(&rope3) == 0);
+
+    destroyRope(&rope2);
+    destroyRope(&rope3);
+}
+
 // NODE TESTS
 
 void testNewRopeNodeHasWeightOfString() {
@@ -260,6 +283,7 @@ int main(int argc, char **argv) {
     testSplittingAnEmptyRopeReturnsTwoEmptyLengths();
     testSplittingACreatedRopeDividesThePassedInString();
     testSplittingACreatedRopeWithIndex0ReturnsEmptyStringAndOriginalContent();
+    testSplittingACreatedRopeWithMaxIndexReturnsOriginalContentAndEmptyString();
 
     printf("\n%d failures", failures);
     return 0;
