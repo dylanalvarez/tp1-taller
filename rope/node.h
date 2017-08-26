@@ -13,6 +13,8 @@ typedef struct RopeNode {
     struct RopeNode *right;
 } RopeNode;
 
+void createEmptyRopeNode(RopeNode *self);
+
 // Post: self is a rope node containing a copy of the passed in string
 void createRopeNode(RopeNode *self, const char *content);
 

@@ -6,13 +6,11 @@ void createRope(Rope *self, const char *content) {
     createRopeNode(self->root, content);
 }
 
-
 static void
 _concatRopesFromRoots(RopeNode *left, RopeNode *right, RopeNode *new_root) {
-    new_root->left = left;
-    new_root->right = right;
-    new_root->content = NULL;
-    new_root->weight = getSubRopeContentLength(new_root->left);
+    createEmptyRopeNode(new_root);
+    appendLeftChild(new_root, left);
+    appendRightChild(new_root, right);
 }
 
 void concatRopes(Rope *left, Rope *right, Rope *new_rope) {

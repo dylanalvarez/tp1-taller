@@ -1,7 +1,7 @@
 #include <string.h>
 #include "node.h"
 
-static void _createEmptyRopeNode(RopeNode *self) {
+void createEmptyRopeNode(RopeNode *self) {
     self->left = NULL;
     self->right = NULL;
     self->weight = 0;
@@ -18,7 +18,7 @@ _setRopeNodeContent(RopeNode *self, const char *string,
 }
 
 void createRopeNode(RopeNode *self, const char *string) {
-    _createEmptyRopeNode(self);
+    createEmptyRopeNode(self);
     if (string) {
         _setRopeNodeContent(self, string, 0, strlen(string));
     }
@@ -44,10 +44,10 @@ void _removeContent(RopeNode *self) {
 
 void
 splitRopeNode(RopeNode *self, size_t index, RopeNode *left, RopeNode *right) {
-    _createEmptyRopeNode(left);
+    createEmptyRopeNode(left);
     _setRopeNodeContent(left, self->content, 0, index);
 
-    _createEmptyRopeNode(right);
+    createEmptyRopeNode(right);
     _setRopeNodeContent(right, self->content, index,
                         strlen(self->content) - index);
 
