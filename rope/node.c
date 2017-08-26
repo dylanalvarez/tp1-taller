@@ -8,18 +8,19 @@ static void _createEmptyRopeNode(RopeNode *self) {
     self->content = NULL;
 }
 
-static void _setRopeNodeContent(RopeNode *self, const char *string) {
-    size_t string_length = strlen(string);
-    self->weight = string_length;
-    self->content = malloc(string_length + 1);
-    strncpy(self->content, string, string_length + 1); // NOLINT
-
+static void
+_setRopeNodeContent(RopeNode *self, const char *string,
+                    size_t initial_position, size_t character_count) {
+    self->weight = character_count;
+    self->content = malloc(character_count + 1);
+    memcpy(self->content, string + initial_position, character_count); // NOLINT
+    self->content[character_count - initial_position] = 0;
 }
 
 void createRopeNode(RopeNode *self, const char *string) {
     _createEmptyRopeNode(self);
     if (string) {
-        _setRopeNodeContent(self, string);
+        _setRopeNodeContent(self, string, 0, strlen(string));
     }
 }
 
@@ -46,8 +47,5 @@ splitRopeNode(RopeNode *source, size_t index, RopeNode *left, RopeNode *right) {
 }
 
 void destroyRopeNode(RopeNode *self) {
-    if (self->content) {
-        free(self->content);
-    }
+    if (self->content) { free(self->content); }
 }
-
