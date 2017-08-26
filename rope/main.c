@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <stdbool.h>
-#include "../rope.h"
+#include "rope.h"
 
 int failures = 0;
 char buffer[50];
