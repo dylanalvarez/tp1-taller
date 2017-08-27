@@ -88,7 +88,7 @@ static int _processInsertCharacter(CommandHandler *self, char *character) {
         return _printGenericErrorAndRetry();
     }
 
-    printf("insert %s in position %d", character, position);
+    printf("insert '%s' in position %d", character, position);
     return RETRY;
 }
 
