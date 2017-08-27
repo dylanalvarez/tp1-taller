@@ -1,6 +1,6 @@
 #include <stdio.h>
-#include <stdlib.h>
 #include <string.h>
+#include <stdlib.h>
 
 #include "command_handler.h"
 
@@ -103,6 +103,7 @@ static int _processPrint(CommandHandler *self) {
     char *buffer = malloc(sizeof(char) * getRopeContentLength(self->rope) + 1);
     getRopeContent(self->rope, buffer);
     printf("%s", buffer);
+    free(buffer);
 
     return EXIT;
 }
