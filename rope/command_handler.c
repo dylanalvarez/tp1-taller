@@ -1,5 +1,7 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
+
 #include "command_handler.h"
 
 #define SEPARATOR " "
@@ -44,10 +46,10 @@ static void _getValidInput(CommandHandler *self) {
     } while (status == RETRY);
 }
 
-static int _processInsert(CommandHandler *self) {
-    char *position_as_string = strtok(NULL, SEPARATOR);
-    char *text = strtok(NULL, SEPARATOR);
-    if (!(position_as_string && text)) {
+static int _processInsert(CommandHandler *self, char *strtok_context) {
+    char *position_as_string = strtok_r(NULL, SEPARATOR, &strtok_context);
+    char *content = strtok_r(NULL, SEPARATOR, &strtok_context);
+    if (!(position_as_string && content)) {
         return _printGenericErrorAndRetry();
     }
 
@@ -56,13 +58,14 @@ static int _processInsert(CommandHandler *self) {
         return _printGenericErrorAndRetry();
     }
 
-    printf("insert %s in position %d", text, position);
+    insert(self->rope, content, position);
+
     return RETRY;
 }
 
-static int _processDelete(CommandHandler *self) {
-    char *from_as_string = strtok(NULL, SEPARATOR);
-    char *to_as_string = strtok(NULL, SEPARATOR);
+static int _processDelete(CommandHandler *self, char *strtok_context) {
+    char *from_as_string = strtok_r(NULL, SEPARATOR, &strtok_context);
+    char *to_as_string = strtok_r(NULL, SEPARATOR, &strtok_context);
     if (!(to_as_string && from_as_string)) {
         return _printGenericErrorAndRetry();
     }
@@ -73,12 +76,15 @@ static int _processDelete(CommandHandler *self) {
         return _printGenericErrorAndRetry();
     }
 
-    printf("delete from position %d to position %d", from, to);
+    delete(self->rope, from, to);
+
     return RETRY;
 }
 
-static int _processInsertCharacter(CommandHandler *self, char *character) {
-    char *position_as_string = strtok(NULL, SEPARATOR);
+static int
+_processInsertCharacter(CommandHandler *self, char *character,
+                        char *strtok_context) {
+    char *position_as_string = strtok_r(NULL, SEPARATOR, &strtok_context);
     if (!position_as_string) {
         return _printGenericErrorAndRetry();
     }
@@ -88,26 +94,31 @@ static int _processInsertCharacter(CommandHandler *self, char *character) {
         return _printGenericErrorAndRetry();
     }
 
-    printf("insert '%s' in position %d", character, position);
+    insert(self->rope, character, position);
+
     return RETRY;
 }
 
 static int _processPrint(CommandHandler *self) {
-    printf("print the whole thing");
+    char *buffer = malloc(sizeof(char) * getRopeContentLength(self->rope) + 1);
+    getRopeContent(self->rope, buffer);
+    printf("%s", buffer);
+
     return EXIT;
 }
 
 static int _processInput(CommandHandler *self) {
-    char *command = strtok(self->input, SEPARATOR);
+    char *strtok_context = NULL;
+    char *command = strtok_r(self->input, SEPARATOR, &strtok_context);
 
     if (strcmp(command, "insert") == 0) {
-        return _processInsert(self);
+        return _processInsert(self, strtok_context);
     } else if (strcmp(command, "delete") == 0) {
-        return _processDelete(self);
+        return _processDelete(self, strtok_context);
     } else if (strcmp(command, "space") == 0) {
-        return _processInsertCharacter(self, " ");
+        return _processInsertCharacter(self, " ", strtok_context);
     } else if (strcmp(command, "newline") == 0) {
-        return _processInsertCharacter(self, "\n");
+        return _processInsertCharacter(self, "\n", strtok_context);
     } else if (strcmp(command, "print") == 0) {
         return _processPrint(self);
     } else {
