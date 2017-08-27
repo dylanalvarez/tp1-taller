@@ -4,10 +4,9 @@
 
 #include "command_handler.h"
 
-#define SEPARATOR " "
 #define EXIT 0
 #define RETRY 1
-
+#define MAX_COMMAND_LENGTH 10
 
 static int _printCustomErrorAndRetry(char *message) {
     printf("Error: %s. Enter 'print' to quit.\n", message);
@@ -46,56 +45,33 @@ static void _getValidInput(CommandHandler *self) {
     } while (status == RETRY);
 }
 
-static int _processInsert(CommandHandler *self, char *strtok_context) {
-    char *position_as_string = strtok_r(NULL, SEPARATOR, &strtok_context);
-    char *content = strtok_r(NULL, SEPARATOR, &strtok_context);
-    if (!(position_as_string && content)) {
-        return _printGenericErrorAndRetry();
-    }
-
+static int _processInsert(CommandHandler *self, char *options) {
     int position;
-    if (sscanf(position_as_string, "%d", &position) != 1) {
+    char content[MAX_INPUT_LENGTH];
+    if (sscanf(options, "%d %s", &position, content) != 2) {
         return _printGenericErrorAndRetry();
     }
-
     insert(self->rope, content, position);
-
     return RETRY;
 }
 
-static int _processDelete(CommandHandler *self, char *strtok_context) {
-    char *from_as_string = strtok_r(NULL, SEPARATOR, &strtok_context);
-    char *to_as_string = strtok_r(NULL, SEPARATOR, &strtok_context);
-    if (!(to_as_string && from_as_string)) {
-        return _printGenericErrorAndRetry();
-    }
-
+static int _processDelete(CommandHandler *self, char *options) {
     int from, to;
-    if (sscanf(from_as_string, "%d", &from) != 1 ||
-        sscanf(to_as_string, "%d", &to) != 1) {
+    if (sscanf(options, "%d %d", &from, &to) != 2){
         return _printGenericErrorAndRetry();
     }
-
     delete(self->rope, from, to);
-
     return RETRY;
 }
 
 static int
 _processInsertCharacter(CommandHandler *self, char *character,
-                        char *strtok_context) {
-    char *position_as_string = strtok_r(NULL, SEPARATOR, &strtok_context);
-    if (!position_as_string) {
-        return _printGenericErrorAndRetry();
-    }
-
+                        char *position_as_string) {
     int position;
     if (sscanf(position_as_string, "%d", &position) != 1) {
         return _printGenericErrorAndRetry();
     }
-
     insert(self->rope, character, position);
-
     return RETRY;
 }
 
@@ -109,17 +85,19 @@ static int _processPrint(CommandHandler *self) {
 }
 
 static int _processInput(CommandHandler *self) {
-    char *strtok_context = NULL;
-    char *command = strtok_r(self->input, SEPARATOR, &strtok_context);
+    char command[MAX_COMMAND_LENGTH];
+    char options[MAX_INPUT_LENGTH];
+
+    sscanf(self->input, "%s %[^\t\n]", command, options);
 
     if (strcmp(command, "insert") == 0) {
-        return _processInsert(self, strtok_context);
+        return _processInsert(self, options);
     } else if (strcmp(command, "delete") == 0) {
-        return _processDelete(self, strtok_context);
+        return _processDelete(self, options);
     } else if (strcmp(command, "space") == 0) {
-        return _processInsertCharacter(self, " ", strtok_context);
+        return _processInsertCharacter(self, " ", options);
     } else if (strcmp(command, "newline") == 0) {
-        return _processInsertCharacter(self, "\n", strtok_context);
+        return _processInsertCharacter(self, "\n", options);
     } else if (strcmp(command, "print") == 0) {
         return _processPrint(self);
     } else {
@@ -129,7 +107,6 @@ static int _processInput(CommandHandler *self) {
 
 void run(CommandHandler *self, Rope *rope) {
     self->rope = rope;
-
     int status;
     do {
         _getValidInput(self);
