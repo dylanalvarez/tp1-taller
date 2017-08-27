@@ -20,7 +20,7 @@ void assert(bool condition) {
 
 void testNewEmptyRopeHasNoLength() {
     Rope rope;
-    createRope(&rope, NULL);
+    createEmptyRope(&rope);
 
     getRopeContent(&rope, buffer);
 
@@ -43,9 +43,9 @@ void testNewRopeHasLengthOfPassedInString() {
 
 void testConcatenationOfEmptyRopesHasNoLength() {
     Rope rope1;
-    createRope(&rope1, NULL);
+    createEmptyRope(&rope1);
     Rope rope2;
-    createRope(&rope2, NULL);
+    createEmptyRope(&rope2);
     Rope rope3;
 
     concatRopes(&rope1, &rope2, &rope3);
@@ -128,7 +128,7 @@ void testMultipleConcatenationOfRopesHasSumOfLengthsAgain() {
 
 void testNewEmptyRopeKeepsAnEmptyString() {
     Rope rope;
-    createRope(&rope, NULL);
+    createEmptyRope(&rope);
     getRopeContent(&rope, buffer);
 
     assert(strcmp(buffer, "") == 0);
@@ -139,9 +139,9 @@ void testNewEmptyRopeKeepsAnEmptyString() {
 
 void testConcatenationOfEmptyRopesKeepsAnEmptyString() {
     Rope rope1;
-    createRope(&rope1, NULL);
+    createEmptyRope(&rope1);
     Rope rope2;
-    createRope(&rope2, NULL);
+    createEmptyRope(&rope2);
     Rope rope3;
 
     concatRopes(&rope1, &rope2, &rope3);
@@ -155,7 +155,7 @@ void testConcatenationOfEmptyRopesKeepsAnEmptyString() {
 
 void testSplittingAnEmptyRopeReturnsTwoEmptyLengths() {
     Rope rope1;
-    createRope(&rope1, NULL);
+    createEmptyRope(&rope1);
     Rope rope2;
     Rope rope3;
 
@@ -438,6 +438,50 @@ void testDeleteFirstCharacters() {
     destroyRope(&rope);
 }
 
+void testInsertInEmptyRope() {
+    Rope rope;
+    createEmptyRope(&rope);
+    insert(&rope, "asd", 0);
+    getRopeContent(&rope, buffer);
+
+    assert(getRopeContentLength(&rope) == 3);
+    assert(strcmp(buffer, "asd") == 0);
+
+    destroyRope(&rope);
+}
+
+void testInsertInNegativeIndex() {
+    Rope rope;
+
+    createEmptyRope(&rope); // ""
+    insert(&rope, "foo", -1); // "foo"
+    insert(&rope, "u", -2); // "fouo"
+    insert(&rope, "a", -5); // "afouo"
+
+    getRopeContent(&rope, buffer);
+    assert(getRopeContentLength(&rope) == 5);
+    assert(strcmp(buffer, "afouo") == 0);
+
+    destroyRope(&rope);
+}
+
+void testDeleteInNegativeIndex() {
+    Rope rope;
+
+    createRope(&rope, "1234567890"); // "1234567890"
+    delete(&rope, -2, -1); // "12345678"
+    delete(&rope, -8, -7); // "345678"
+    delete(&rope, 0, -5); // "5678"
+    delete(&rope, 1, -3); // "578"
+    delete(&rope, -3, 1); // "78"
+
+    getRopeContent(&rope, buffer);
+    assert(getRopeContentLength(&rope) == 2);
+    assert(strcmp(buffer, "78") == 0);
+
+    destroyRope(&rope);
+}
+
 // NODE TESTS
 
 void testNewRopeNodeHasWeightOfString() {
@@ -484,6 +528,9 @@ int main(int argc, char **argv) {
     testDeleteAllCharacters();
     testDeleteLastCharacters();
     testDeleteFirstCharacters();
+    testInsertInEmptyRope();
+    testInsertInNegativeIndex();
+    testDeleteInNegativeIndex();
 
     printf("\n%d failures", failures);
     return 0;

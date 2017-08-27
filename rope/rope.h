@@ -7,6 +7,8 @@ typedef struct {
     RopeNode *root;
 } Rope;
 
+void createEmptyRope(Rope *self);
+
 // Post: self is a rope containing the passed in string.
 void createRope(Rope *self, const char *content);
 
@@ -30,15 +32,23 @@ void splitRope(
 );
 
 // Pre:  index is a number between 0 and getRopeContentLength(&self)
+//       index can be negative: it is -1 for inserting in
+//       getRopeContentLength(&self) and -n for inserting in
+//       getRopeContentLength(&self) - n + 1.
+//       in that case, it has to be between - getRopeContentLength(&self) - 1
+//       and -1.
 // Post: the passed in string is inserted beginning in (and including)
 //       position "index"
-void insert(Rope *self, const char *content, size_t index);
+void insert(Rope *self, const char *content, int index);
 
 // Pre:  from < to, both "from" and "to" are numbers between 0 and
 //       getRopeContentLength(&self)
-// Post: the rope's characters in positions between "from" and (not including)
+//       index can be negative: it has to be between
+//       - getRopeContentLength(&self) - 1 and -1.
+// Post: the rope's characters in positions between "from" and (not including
+//       if the index is positive, including if it's negative)
 //       "to" are removed.
-void delete(Rope *self, size_t from, size_t to);
+void delete(Rope *self, int from, int to);
 
 // Post: returns length of the string contained within self
 //       it's faster than calling strlen on getRopeContent

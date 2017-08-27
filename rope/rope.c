@@ -1,6 +1,11 @@
 #include <stdio.h>
 #include "rope.h"
 
+void createEmptyRope(Rope *self) {
+    self->root = malloc(sizeof(RopeNode));
+    createEmptyRopeNode(self->root);
+}
+
 void createRope(Rope *self, const char *content) {
     self->root = malloc(sizeof(RopeNode));
     createRopeNode(self->root, content);
@@ -71,9 +76,10 @@ _moveFirstCharactersToLeftRoot(RopeNode *node,
 void splitRope(Rope *source, size_t characters_to_left,
                Rope *left, Rope *right) {
     RopeNode *left_root = NULL;
-    _moveFirstCharactersToLeftRoot(source->root,
-                                   characters_to_left,
-                                   &left_root);
+    RopeNode *to_left = _moveFirstCharactersToLeftRoot(source->root,
+                                                       characters_to_left,
+                                                       &left_root);
+    _appendToLeft(to_left, &left_root);
     if (!left_root) {
         left_root = malloc(sizeof(RopeNode));
         createEmptyRopeNode(left_root);
@@ -82,10 +88,16 @@ void splitRope(Rope *source, size_t characters_to_left,
     right->root = source->root;
 }
 
-void insert(Rope *self, const char *content, size_t index) {
+int _translateNegativeIndex(Rope *self, int index) {
+    return (int) (getRopeContentLength(self) + 1 + index);
+}
+
+void insert(Rope *self, const char *content, int index) {
+    index = (index < 0) ? _translateNegativeIndex(self, index) : index;
+
     Rope left;
     Rope right;
-    splitRope(self, index, &left, &right);
+    splitRope(self, (size_t) index, &left, &right);
 
     Rope center;
     createRope(&center, content);
@@ -98,14 +110,17 @@ void insert(Rope *self, const char *content, size_t index) {
     self->root = new_self.root;
 }
 
-void delete(Rope *self, size_t from, size_t to) {
+void delete(Rope *self, int from, int to) {
+    from = (from < 0) ? _translateNegativeIndex(self, from) - 1 : from;
+    to = (to < 0) ? _translateNegativeIndex(self, to) : to;
+
     Rope left;
     Rope center;
     Rope right;
 
     Rope temp;
-    splitRope(self, from, &left, &temp);
-    splitRope(&temp, to - from, &center, &right);
+    splitRope(self, (size_t) from, &left, &temp);
+    splitRope(&temp, (size_t) (to - from), &center, &right);
 
     Rope new_self;
     concatRopes(&left, &right, &new_self);
