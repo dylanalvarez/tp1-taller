@@ -526,6 +526,22 @@ void testNewRopeIsLeaf() {
     destroyRopeNode(&rope_node);
 }
 
+void testAllTogether(){
+    Rope rope;
+    createEmptyRope(&rope);
+    char buffer[50];
+
+    insert(&rope, "qwertyuiop", 0);
+    delete(&rope, -3, -2);
+    insert(&rope, " ", 2);
+    insert(&rope, "\n", 4);
+
+    getRopeContent(&rope, buffer);
+    assert(strcmp(buffer, "qw e\nrtyup") == 0);
+
+    destroyRope(&rope);
+}
+
 void runRopeTests() {
     testNewRopeNodeHasWeightOfString();
     testNewRopeIsLeaf();
@@ -553,4 +569,5 @@ void runRopeTests() {
     testInsertInEmptyRope();
     testInsertInNegativeIndex();
     testDeleteInNegativeIndex();
+    testAllTogether();
 }
