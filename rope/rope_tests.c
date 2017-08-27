@@ -542,6 +542,22 @@ void testAllTogether(){
     destroyRope(&rope);
 }
 
+void testBunchOfInserts(){
+    Rope rope;
+    createEmptyRope(&rope);
+    char buffer[50];
+
+    insert(&rope, "olamundo", 0);
+    insert(&rope, "H", 0);
+    insert(&rope, "!", -1);
+    insert(&rope, "-", 4);
+
+    getRopeContent(&rope, buffer);
+    assert(strcmp(buffer, "Hola-mundo!") == 0);
+
+    destroyRope(&rope);
+}
+
 void runRopeTests() {
     testNewRopeNodeHasWeightOfString();
     testNewRopeIsLeaf();
@@ -570,4 +586,5 @@ void runRopeTests() {
     testInsertInNegativeIndex();
     testDeleteInNegativeIndex();
     testAllTogether();
+    testBunchOfInserts();
 }

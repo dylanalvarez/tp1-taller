@@ -45,7 +45,8 @@ void insert(Rope *self, const char *content, int index);
 //       getRopeContentLength(&self)
 //       index can be negative: it has to be between
 //       - getRopeContentLength(&self) - 1 and -1.
-// Post: the rope's characters in positions between "from" and (not including
+// Post: the rope's characters in positions between "from" (including if the
+//       index is positive, not including if it's negative) and (not including
 //       if the index is positive, including if it's negative)
 //       "to" are removed.
 void delete(Rope *self, int from, int to);

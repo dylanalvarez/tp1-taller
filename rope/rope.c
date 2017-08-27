@@ -54,9 +54,10 @@ _moveFirstCharactersToLeftRoot(RopeNode *node,
                                                            left_root);
         _appendToLeft(to_left, left_root);
     } else if (node->weight < characters_to_left) {
-        _moveFirstCharactersToLeftRoot(node->right,
+        RopeNode* to_left = _moveFirstCharactersToLeftRoot(node->right,
                                        characters_to_left - node->weight,
                                        left_root);
+        _appendToLeft(to_left, left_root);
         _appendToLeft(node->left, left_root);
 
         appendLeftChild(node, NULL);
@@ -113,7 +114,7 @@ void insert(Rope *self, const char *content, int index) {
 }
 
 void delete(Rope *self, int from, int to) {
-    from = (from < 0) ? _translateNegativeIndex(self, from) - 1 : from;
+    from = (from < 0) ? _translateNegativeIndex(self, from) : from;
     to = (to < 0) ? _translateNegativeIndex(self, to) : to;
 
     Rope left;
