@@ -52,7 +52,7 @@ static int _processInsert(CommandHandler *self) {
     }
 
     int position;
-    if (sscanf(position_as_string, "%d", &position) != 1){
+    if (sscanf(position_as_string, "%d", &position) != 1) {
         return _printGenericErrorAndRetry();
     }
 
@@ -67,12 +67,9 @@ static int _processDelete(CommandHandler *self) {
         return _printGenericErrorAndRetry();
     }
 
-    int from;
-    if (sscanf(from_as_string, "%d", &from) != 1){
-        return _printGenericErrorAndRetry();
-    }
-    int to;
-    if (sscanf(to_as_string, "%d", &to) != 1){
+    int from, to;
+    if (sscanf(from_as_string, "%d", &from) != 1 ||
+        sscanf(to_as_string, "%d", &to) != 1) {
         return _printGenericErrorAndRetry();
     }
 
@@ -80,33 +77,18 @@ static int _processDelete(CommandHandler *self) {
     return RETRY;
 }
 
-static int _processSpace(CommandHandler *self) {
+static int _processInsertCharacter(CommandHandler *self, char *character) {
     char *position_as_string = strtok(NULL, SEPARATOR);
     if (!position_as_string) {
         return _printGenericErrorAndRetry();
     }
 
     int position;
-    if (sscanf(position_as_string, "%d", &position) != 1){
+    if (sscanf(position_as_string, "%d", &position) != 1) {
         return _printGenericErrorAndRetry();
     }
 
-    printf("insert space in position %d", position);
-    return RETRY;
-}
-
-static int _processNewline(CommandHandler *self) {
-    char *position_as_string = strtok(NULL, SEPARATOR);
-    if (!position_as_string) {
-        return _printGenericErrorAndRetry();
-    }
-
-    int position;
-    if (sscanf(position_as_string, "%d", &position) != 1){
-        return _printGenericErrorAndRetry();
-    }
-
-    printf("insert new line in position %d", position);
+    printf("insert %s in position %d", character, position);
     return RETRY;
 }
 
@@ -123,9 +105,9 @@ static int _processInput(CommandHandler *self) {
     } else if (strcmp(command, "delete") == 0) {
         return _processDelete(self);
     } else if (strcmp(command, "space") == 0) {
-        return _processSpace(self);
+        return _processInsertCharacter(self, " ");
     } else if (strcmp(command, "newline") == 0) {
-        return _processNewline(self);
+        return _processInsertCharacter(self, "\n");
     } else if (strcmp(command, "print") == 0) {
         return _processPrint(self);
     } else {
