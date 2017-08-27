@@ -1,6 +1,7 @@
 #include "rope_tests.h"
 #include "rope.h"
 #include <stdio.h>
+#include <string.h>
 
 void assert(bool condition) {
     condition ? printf("OK\n") : printf("FAILED!\n");

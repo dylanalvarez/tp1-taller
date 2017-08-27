@@ -2,8 +2,6 @@
 #define TP1_TALLER_NODE_H
 
 #include <stddef.h>
-#include <string.h>
-#include <stdlib.h>
 #include <stdbool.h>
 
 typedef struct RopeNode {

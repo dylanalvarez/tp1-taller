@@ -1,5 +1,6 @@
-#include <string.h>
 #include "node.h"
+#include <stdlib.h>
+#include <string.h>
 
 void createEmptyRopeNode(RopeNode *self) {
     self->left = NULL;
