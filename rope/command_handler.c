@@ -47,43 +47,66 @@ static void _getValidInput(CommandHandler *self) {
 static int _processInsert(CommandHandler *self) {
     char *position_as_string = strtok(NULL, SEPARATOR);
     char *text = strtok(NULL, SEPARATOR);
-    int position;
     if (!(position_as_string && text)) {
         return _printGenericErrorAndRetry();
     }
-    int successful_if_1 = sscanf(position_as_string, "%d", &position);
-    if (successful_if_1 != 1){
+
+    int position;
+    if (sscanf(position_as_string, "%d", &position) != 1){
         return _printGenericErrorAndRetry();
     }
+
     printf("insert %s in position %d", text, position);
     return RETRY;
 }
 
 static int _processDelete(CommandHandler *self) {
-    char *from = strtok(NULL, SEPARATOR);
-    char *to = strtok(NULL, SEPARATOR);
-    if (!(to && from)) {
+    char *from_as_string = strtok(NULL, SEPARATOR);
+    char *to_as_string = strtok(NULL, SEPARATOR);
+    if (!(to_as_string && from_as_string)) {
         return _printGenericErrorAndRetry();
     }
-    printf("delete from position %s to position %s", from, to);
+
+    int from;
+    if (sscanf(from_as_string, "%d", &from) != 1){
+        return _printGenericErrorAndRetry();
+    }
+    int to;
+    if (sscanf(to_as_string, "%d", &to) != 1){
+        return _printGenericErrorAndRetry();
+    }
+
+    printf("delete from position %d to position %d", from, to);
     return RETRY;
 }
 
 static int _processSpace(CommandHandler *self) {
-    char *position = strtok(NULL, SEPARATOR);
-    if (!position) {
+    char *position_as_string = strtok(NULL, SEPARATOR);
+    if (!position_as_string) {
         return _printGenericErrorAndRetry();
     }
-    printf("insert space in position %s", position);
+
+    int position;
+    if (sscanf(position_as_string, "%d", &position) != 1){
+        return _printGenericErrorAndRetry();
+    }
+
+    printf("insert space in position %d", position);
     return RETRY;
 }
 
 static int _processNewline(CommandHandler *self) {
-    char *position = strtok(NULL, SEPARATOR);
-    if (!position) {
+    char *position_as_string = strtok(NULL, SEPARATOR);
+    if (!position_as_string) {
         return _printGenericErrorAndRetry();
     }
-    printf("insert new line in position %s", position);
+
+    int position;
+    if (sscanf(position_as_string, "%d", &position) != 1){
+        return _printGenericErrorAndRetry();
+    }
+
+    printf("insert new line in position %d", position);
     return RETRY;
 }
 
