@@ -2,22 +2,14 @@
 #include "rope.h"
 #include <stdio.h>
 
-int failures = 0;
-char buffer[50];
-char buffer2[50];
-char buffer3[50];
-char leftBuffer[50];
-char rightBuffer[50];
-
 void assert(bool condition) {
     condition ? printf("OK\n") : printf("FAILED!\n");
-    if (!condition) {
-        failures++;
-    }
 }
 
 void testNewEmptyRopeHasNoLength() {
     Rope rope;
+    char buffer[50];
+
     createEmptyRope(&rope);
 
     getRopeContent(&rope, buffer);
@@ -30,6 +22,7 @@ void testNewEmptyRopeHasNoLength() {
 
 void testNewRopeHasLengthOfPassedInString() {
     Rope rope;
+    char buffer[50];
     createRope(&rope, "example");
     getRopeContent(&rope, buffer);
 
@@ -45,6 +38,7 @@ void testConcatenationOfEmptyRopesHasNoLength() {
     Rope rope2;
     createEmptyRope(&rope2);
     Rope rope3;
+    char buffer[50];
 
     concatRopes(&rope1, &rope2, &rope3);
 
@@ -62,6 +56,7 @@ void testConcatenationOfRopesHasSumOfLengths() {
     Rope rope2;
     createRope(&rope2, "456");
     Rope rope3;
+    char buffer[50];
 
     concatRopes(&rope1, &rope2, &rope3);
 
@@ -85,6 +80,7 @@ void testMultipleConcatenationOfRopesHasSumOfLengths() {
     Rope rope5;
     Rope rope6;
     Rope rope7;
+    char buffer[50];
 
     concatRopes(&rope1, &rope2, &rope5);
     concatRopes(&rope3, &rope4, &rope6);
@@ -111,6 +107,7 @@ void testMultipleConcatenationOfRopesHasSumOfLengthsAgain() {
     Rope rope5;
     Rope rope6;
     Rope rope7;
+    char buffer[50];
 
     concatRopes(&rope1, &rope2, &rope5);
     concatRopes(&rope3, &rope4, &rope6);
@@ -126,6 +123,7 @@ void testMultipleConcatenationOfRopesHasSumOfLengthsAgain() {
 
 void testNewEmptyRopeKeepsAnEmptyString() {
     Rope rope;
+    char buffer[50];
     createEmptyRope(&rope);
     getRopeContent(&rope, buffer);
 
@@ -141,6 +139,7 @@ void testConcatenationOfEmptyRopesKeepsAnEmptyString() {
     Rope rope2;
     createEmptyRope(&rope2);
     Rope rope3;
+    char buffer[50];
 
     concatRopes(&rope1, &rope2, &rope3);
     getRopeContent(&rope3, buffer);
@@ -156,6 +155,8 @@ void testSplittingAnEmptyRopeReturnsTwoEmptyLengths() {
     createEmptyRope(&rope1);
     Rope rope2;
     Rope rope3;
+    char buffer2[50];
+    char buffer3[50];
 
     splitRope(&rope1, 0, &rope2, &rope3);
 
@@ -176,6 +177,8 @@ void testSplittingACreatedRopeDividesThePassedInString() {
     createRope(&rope1, "qwerty");
     Rope rope2;
     Rope rope3;
+    char buffer2[50];
+    char buffer3[50];
 
     splitRope(&rope1, 2, &rope2, &rope3);
 
@@ -196,6 +199,8 @@ void testSplittingACreatedRopeWithIndex0ReturnsEmptyStringAndOriginalContent() {
     createRope(&rope1, "qwerty");
     Rope rope2;
     Rope rope3;
+    char buffer2[50];
+    char buffer3[50];
 
     splitRope(&rope1, 0, &rope2, &rope3);
 
@@ -217,6 +222,8 @@ testSplittingACreatedRopeWithMaxIndexReturnsOriginalContentAndEmptyString() {
     createRope(&rope1, "qwerty");
     Rope rope2;
     Rope rope3;
+    char buffer2[50];
+    char buffer3[50];
 
     splitRope(&rope1, 6, &rope2, &rope3);
 
@@ -255,6 +262,8 @@ void testSplitWikipediaExample() {
     Rope ropeD;
     Rope ropeG;
     Rope ropeH;
+    char leftBuffer[50];
+    char rightBuffer[50];
 
     concatRopes(&ropeE, &ropeF, &ropeC);
     concatRopes(&ropeJ, &ropeK, &ropeG);
@@ -311,6 +320,8 @@ void testSplitWikipediaExampleThisTimeNeedingToSplitANode() {
 
     Rope leftDestination;
     Rope rightDestination;
+    char leftBuffer[50];
+    char rightBuffer[50];
 
     splitRope(&ropeA, 10, &leftDestination, &rightDestination);
 
@@ -369,6 +380,8 @@ void testSplitWikipediaExampleThisTimeCheckingEveryCharacter() {
 
 void testInsertInFirstIndex() {
     Rope rope;
+    char buffer[50];
+
     createRope(&rope, "example");
     insert(&rope, "qwe", 0);
     getRopeContent(&rope, buffer);
@@ -380,6 +393,8 @@ void testInsertInFirstIndex() {
 
 void testInsertInLastIndex() {
     Rope rope;
+    char buffer[50];
+
     createRope(&rope, "example");
     insert(&rope, "qwe", 7);
     getRopeContent(&rope, buffer);
@@ -391,6 +406,8 @@ void testInsertInLastIndex() {
 
 void testInsertInTheMiddle() {
     Rope rope;
+    char buffer[50];
+
     createRope(&rope, "example");
     insert(&rope, "qwe", 3);
     getRopeContent(&rope, buffer);
@@ -402,6 +419,8 @@ void testInsertInTheMiddle() {
 
 void testDeleteAllCharacters() {
     Rope rope;
+    char buffer[50];
+
     createRope(&rope, "example");
     delete(&rope, 0, 7);
     getRopeContent(&rope, buffer);
@@ -414,6 +433,8 @@ void testDeleteAllCharacters() {
 
 void testDeleteLastCharacters() {
     Rope rope;
+    char buffer[50];
+
     createRope(&rope, "example");
     delete(&rope, 2, 7);
     getRopeContent(&rope, buffer);
@@ -426,6 +447,8 @@ void testDeleteLastCharacters() {
 
 void testDeleteFirstCharacters() {
     Rope rope;
+    char buffer[50];
+
     createRope(&rope, "example");
     delete(&rope, 0, 3);
     getRopeContent(&rope, buffer);
@@ -438,6 +461,8 @@ void testDeleteFirstCharacters() {
 
 void testInsertInEmptyRope() {
     Rope rope;
+    char buffer[50];
+
     createEmptyRope(&rope);
     insert(&rope, "asd", 0);
     getRopeContent(&rope, buffer);
@@ -450,6 +475,7 @@ void testInsertInEmptyRope() {
 
 void testInsertInNegativeIndex() {
     Rope rope;
+    char buffer[50];
 
     createEmptyRope(&rope); // ""
     insert(&rope, "foo", -1); // "foo"
@@ -465,6 +491,7 @@ void testInsertInNegativeIndex() {
 
 void testDeleteInNegativeIndex() {
     Rope rope;
+    char buffer[50];
 
     createRope(&rope, "1234567890"); // "1234567890"
     delete(&rope, -2, -1); // "12345678"
@@ -525,6 +552,4 @@ void runRopeTests() {
     testInsertInEmptyRope();
     testInsertInNegativeIndex();
     testDeleteInNegativeIndex();
-
-    printf("\nRope tests: \n%d failures.\n", failures);
 }
