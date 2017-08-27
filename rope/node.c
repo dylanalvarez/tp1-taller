@@ -13,14 +13,14 @@ _setRopeNodeContent(RopeNode *self, const char *string,
                     size_t initial_position, size_t character_count) {
     self->weight = character_count;
     self->content = malloc(character_count + 1);
-    memcpy(self->content, string + initial_position, character_count); // NOLINT
+    memcpy(self->content, string + initial_position, character_count);
     self->content[character_count] = 0;
 }
 
 void createRopeNode(RopeNode *self, const char *string) {
     createEmptyRopeNode(self);
     if (string) {
-        _setRopeNodeContent(self, string, 0, strlen(string)); // NOLINT
+        _setRopeNodeContent(self, string, 0, strlen(string));
     }
 }
 
