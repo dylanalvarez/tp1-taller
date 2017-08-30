@@ -25,13 +25,14 @@ static int _getInput(CommandHandler *self) {
 
     size_t input_length = strlen(self->input);
     char last_character = self->input[input_length - 1];
+    bool commandIsEmpty = input_length <= strlen("\n\0");
 
     if (last_character != '\n') {
         return _printCustomErrorAndRetry(
                 "Command length greater than expected");
     }
-    if (input_length <= strlen("\n\0")) {
-        return _printCustomErrorAndRetry("Empty command");
+    if (commandIsEmpty) {
+        return RETRY;
     }
 
     self->input[input_length - 1] = 0;
