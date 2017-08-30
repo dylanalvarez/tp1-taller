@@ -495,15 +495,13 @@ void testDeleteInNegativeIndex() {
     char buffer[50];
 
     createRope(&rope, "1234567890"); // "1234567890"
-    delete(&rope, -2, -1); // "12345678"
-    delete(&rope, -8, -7); // "345678"
-    delete(&rope, 0, -5); // "5678"
-    delete(&rope, 1, -3); // "578"
-    delete(&rope, -3, 1); // "78"
+    delete(&rope, -2, -1); // "123456789"
+    delete(&rope, -8, -7); // "12456789"
+    delete(&rope, 0, -5); // "6789"
 
     getRopeContent(&rope, buffer);
-    assert(getRopeContentLength(&rope) == 2);
-    assert(strcmp(buffer, "78") == 0);
+    assert(getRopeContentLength(&rope) == 4);
+    assert(strcmp(buffer, "6789") == 0);
 
     destroyRope(&rope);
 }
@@ -532,12 +530,12 @@ void testAllTogether(){
     char buffer[50];
 
     insert(&rope, "qwertyuiop", 0);
-    delete(&rope, -3, -2);
-    insert(&rope, " ", 2);
-    insert(&rope, "\n", 4);
+    delete(&rope, -3, -2); // qwertyuip
+    insert(&rope, " ", 2); // qw ertyuip
+    insert(&rope, "\n", 4); // qw e\nrtyuip
 
     getRopeContent(&rope, buffer);
-    assert(strcmp(buffer, "qw e\nrtyup") == 0);
+    assert(strcmp(buffer, "qw e\nrtyuip") == 0);
 
     destroyRope(&rope);
 }
@@ -554,6 +552,24 @@ void testBunchOfInserts(){
 
     getRopeContent(&rope, buffer);
     assert(strcmp(buffer, "Hola-mundo!") == 0);
+
+    destroyRope(&rope);
+}
+
+void testBunchOfInsertsToLastPosition(){
+    Rope rope;
+    createEmptyRope(&rope);
+    char buffer[50];
+
+    insert(&rope, "q", -1);
+    insert(&rope, "w", -1);
+    insert(&rope, "e", -1);
+    insert(&rope, "r", -1);
+    insert(&rope, "t", -1);
+    insert(&rope, "y", -1);
+
+    getRopeContent(&rope, buffer);
+    assert(strcmp(buffer, "qwerty") == 0);
 
     destroyRope(&rope);
 }
@@ -587,4 +603,5 @@ void runRopeTests() {
     testDeleteInNegativeIndex();
     testAllTogether();
     testBunchOfInserts();
+    testBunchOfInsertsToLastPosition();
 }

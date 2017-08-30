@@ -92,7 +92,11 @@ void splitRope(Rope *source, size_t characters_to_left,
 }
 
 int _translateNegativeIndex(Rope *self, int index) {
-    return (int) (getRopeContentLength(self) + 1 + index);
+    size_t content_length = getRopeContentLength(self);
+    if (content_length == 0){
+        return 0;
+    }
+    return (int) (content_length + 1 + index);
 }
 
 void insert(Rope *self, const char *content, int index) {
