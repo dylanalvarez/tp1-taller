@@ -13,6 +13,14 @@ typedef struct {
 
 void createConnectionHandler(ConnectionHandler *self, char *ip, char *port);
 
+void sendInteger(ConnectionHandler *self, int content, int size_in_bytes);
+
+void sendString(ConnectionHandler *self, char *content, int size_in_bytes);
+
+int receiveInteger(ConnectionHandler* self, int size_in_bytes);
+
+void receiveString(ConnectionHandler* self, char*buffer, int size_in_bytes);
+
 void destroyConnectionHandler(ConnectionHandler *self);
 
 #endif //TP1_TALLER_CONNECTION_HANDLER_H

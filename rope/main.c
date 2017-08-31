@@ -1,6 +1,5 @@
 #include "command_handler.h"
 #include <string.h>
-#include "connection_handler.h"
 #include "rope_tests.h"
 
 #define localhost "127.0.0.1"
@@ -8,20 +7,21 @@
 #define SUCCESS 0
 #define ERROR -1
 
-void runCommandLineApp(FILE *command_file) {
+void runCommandLineApp(FILE *command_file,
+                       ConnectionHandler *connection_handler) {
     Rope rope;
     createEmptyRope(&rope);
     CommandHandler command_handler;
-    run(&command_handler, &rope, command_file);
+    run(&command_handler, connection_handler, command_file);
     destroyRope(&rope);
 }
 
 int _handleClient(char **argv, FILE *command_file) {
     ConnectionHandler connection_handler;
-    char* ip = argv[2];
-    char* port = argv[3];
+    char *ip = argv[2];
+    char *port = argv[3];
     createConnectionHandler(&connection_handler, ip, port);
-    runCommandLineApp(command_file);
+    runCommandLineApp(command_file, &connection_handler);
     destroyConnectionHandler(&connection_handler);
     return SUCCESS;
 }

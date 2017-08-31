@@ -1,12 +1,17 @@
 #include <stdio.h>
 #include <string.h>
-#include <stdlib.h>
 
 #include "command_handler.h"
 
 #define EXIT 0
 #define RETRY 1
 #define MAX_COMMAND_LENGTH 10
+
+#define INSERT_OPCODE 1
+#define DELETE_OPCODE 2
+#define SPACE_OPCODE 3
+#define NEWLINE_OPCODE 4
+#define PRINT_OPCODE 5
 
 static void _printCustomError(char *message) {
     printf("Error: %s.\n", message);
@@ -16,10 +21,10 @@ static void _printGenericError() {
     _printCustomError("Invalid command");
 }
 
-static int _lengthExceptForSpaces(char* input){
+static int _lengthExceptForSpaces(char *input) {
     int length = 0;
     for (int i = 0; i < strlen(input); i++) {
-        if (input[i] != ' '){
+        if (input[i] != ' ') {
             length++;
         }
     }
@@ -69,7 +74,11 @@ static void _processInsert(CommandHandler *self, char *options) {
     if (sscanf(options, "%d %s", &position, content) != 2) {
         _printGenericError();
     }
-    insert(self->rope, content, position);
+    int content_length = (int) strlen(content);
+    sendInteger(self->connection_handler, INSERT_OPCODE, 4);
+    sendInteger(self->connection_handler, position, 4);
+    sendInteger(self->connection_handler, content_length, 2);
+    sendString(self->connection_handler, content, content_length);
 }
 
 static void _processDelete(CommandHandler *self, char *options) {
@@ -77,7 +86,9 @@ static void _processDelete(CommandHandler *self, char *options) {
     if (sscanf(options, "%d %d", &from, &to) != 2) {
         _printGenericError();
     }
-    delete(self->rope, from, to);
+    sendInteger(self->connection_handler, DELETE_OPCODE, 4);
+    sendInteger(self->connection_handler, to, 4);
+    sendInteger(self->connection_handler, from, 4);
 }
 
 static void
@@ -87,14 +98,23 @@ _processInsertCharacter(CommandHandler *self, char *character,
     if (sscanf(position_as_string, "%d", &position) != 1) {
         _printGenericError();
     }
-    insert(self->rope, character, position);
+
+    if (strcmp(character, " ") == 0) {
+        sendInteger(self->connection_handler, SPACE_OPCODE, 4);
+    } else if (strcmp(character, "\n") == 0) {
+        sendInteger(self->connection_handler, NEWLINE_OPCODE, 4);
+    } else {
+        return;
+    }
+    sendInteger(self->connection_handler, position, 4);
 }
 
 static void _processPrint(CommandHandler *self) {
-    char *buffer = malloc(sizeof(char) * getRopeContentLength(self->rope) + 1);
-    getRopeContent(self->rope, buffer);
+    char buffer[MAX_INPUT_LENGTH];
+    sendInteger(self->connection_handler, PRINT_OPCODE, 4);
+    int length = receiveInteger(self->connection_handler, 4);
+    receiveString(self->connection_handler, buffer, length);
     printf("%s", buffer);
-    free(buffer);
 }
 
 static int _processInput(CommandHandler *self) {
@@ -121,8 +141,10 @@ static int _processInput(CommandHandler *self) {
     }
 }
 
-void run(CommandHandler *self, Rope *rope, FILE *command_file) {
-    self->rope = rope;
+void run(CommandHandler *self,
+         ConnectionHandler *connection_handler,
+         FILE *command_file) {
+    self->connection_handler = connection_handler;
     self->command_file = command_file;
     int status;
     do {
