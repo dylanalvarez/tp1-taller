@@ -6,20 +6,20 @@
 #include "connection_handler.h"
 
 typedef struct {
-    char *ip;
-    char *port;
+    int skt;
 } ConnectionHandler;
 
 
-void createConnectionHandler(ConnectionHandler *self, char *ip, char *port);
+int createConnectionHandler(ConnectionHandler *self, char *ip, char *port,
+                             bool is_server);
 
 void sendInteger(ConnectionHandler *self, int content, int size_in_bytes);
 
 void sendString(ConnectionHandler *self, char *content, int size_in_bytes);
 
-int receiveInteger(ConnectionHandler* self, int size_in_bytes);
+int receiveInteger(ConnectionHandler *self, int size_in_bytes);
 
-void receiveString(ConnectionHandler* self, char*buffer, int size_in_bytes);
+void receiveString(ConnectionHandler *self, char *buffer, int size_in_bytes);
 
 void destroyConnectionHandler(ConnectionHandler *self);
 

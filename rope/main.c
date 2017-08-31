@@ -20,7 +20,10 @@ int _handleClient(char **argv, FILE *command_file) {
     ConnectionHandler connection_handler;
     char *ip = argv[2];
     char *port = argv[3];
-    createConnectionHandler(&connection_handler, ip, port);
+    if (createConnectionHandler(&connection_handler, ip, port, false) ==
+        ERROR) {
+        return ERROR;
+    }
     runCommandLineApp(command_file, &connection_handler);
     destroyConnectionHandler(&connection_handler);
     return SUCCESS;
@@ -28,7 +31,10 @@ int _handleClient(char **argv, FILE *command_file) {
 
 int _handleServer(char **argv) {
     ConnectionHandler connection_handler;
-    createConnectionHandler(&connection_handler, localhost, argv[2]);
+    if (createConnectionHandler(&connection_handler, localhost, argv[2],
+                                true) == ERROR) {
+        return ERROR;
+    }
     destroyConnectionHandler(&connection_handler);
     return SUCCESS;
 }

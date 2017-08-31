@@ -14,7 +14,7 @@
 #define PRINT_OPCODE 5
 
 static void _printCustomError(char *message) {
-    printf("Error: %s.\n", message);
+    fprintf(stderr, "Error: %s.\n", message);
 }
 
 static void _printGenericError() {
