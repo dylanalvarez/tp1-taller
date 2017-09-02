@@ -1,6 +1,7 @@
 #ifndef TP1_TALLER_ROPE_H
 #define TP1_TALLER_ROPE_H
 
+#include <stdint.h>
 #include "node.h"
 
 typedef struct {

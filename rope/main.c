@@ -1,52 +1,46 @@
-#include "command_handler.h"
+#include "client_handler.h"
 #include <string.h>
 #include "rope_tests.h"
-
-#define localhost "127.0.0.1"
+#include "server_handler.h"
 
 #define SUCCESS 0
 #define ERROR -1
-
-void runCommandLineApp(FILE *command_file,
-                       ConnectionHandler *connection_handler) {
-    Rope rope;
-    createEmptyRope(&rope);
-    CommandHandler command_handler;
-    run(&command_handler, connection_handler, command_file);
-    destroyRope(&rope);
-}
 
 int _handleClient(char **argv, FILE *command_file) {
     ConnectionHandler connection_handler;
     char *ip = argv[2];
     char *port = argv[3];
-    if (createConnectionHandler(&connection_handler, ip, port, false) ==
-        ERROR) {
+    if (createClientConnectionHandler(&connection_handler, ip, port) == ERROR) {
         return ERROR;
     }
-    runCommandLineApp(command_file, &connection_handler);
+    ClientHandler client_handler;
+    runClientHandler(&client_handler, &connection_handler, command_file);
     destroyConnectionHandler(&connection_handler);
     return SUCCESS;
 }
 
 int _handleServer(char **argv) {
     ConnectionHandler connection_handler;
-    if (createConnectionHandler(&connection_handler, localhost, argv[2],
-                                true) == ERROR) {
+    char *port = argv[2];
+    if (createServerConnectionHandler(&connection_handler, port) == ERROR) {
         return ERROR;
     }
+    ServerHandler server_handler;
+    Rope rope;
+    createEmptyRope(&rope);
+    runServerHandler(&server_handler, &connection_handler, &rope);
+    destroyRope(&rope);
     destroyConnectionHandler(&connection_handler);
     return SUCCESS;
 }
 
 int main(int argc, char **argv) {
     int number_of_arguments = argc - 1;
-    if (number_of_arguments < 2) {
+    if (number_of_arguments < 1) {
         return ERROR;
     }
 
     if (strcmp(argv[1], "client") == 0) { // client 127.0.0.1 9898 input.txt
-
         if (number_of_arguments < 3) {
             return ERROR;
         }
@@ -61,14 +55,15 @@ int main(int argc, char **argv) {
         return exit_code;
 
     } else if (strcmp(argv[1], "server") == 0) { // server 9898
-
+        if (number_of_arguments < 2) {
+            return ERROR;
+        }
         return _handleServer(argv);
 
     } else if (strcmp(argv[1], "test") == 0) { // test
-
         runRopeTests();
         return SUCCESS;
-
     }
+
     return ERROR;
 }

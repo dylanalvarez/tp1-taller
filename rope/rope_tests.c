@@ -524,7 +524,7 @@ void testNewRopeIsLeaf() {
     destroyRopeNode(&rope_node);
 }
 
-void testAllTogether(){
+void testAllTogether() {
     Rope rope;
     createEmptyRope(&rope);
     char buffer[50];
@@ -540,7 +540,7 @@ void testAllTogether(){
     destroyRope(&rope);
 }
 
-void testBunchOfInserts(){
+void testBunchOfInserts() {
     Rope rope;
     createEmptyRope(&rope);
     char buffer[50];
@@ -556,7 +556,7 @@ void testBunchOfInserts(){
     destroyRope(&rope);
 }
 
-void testBunchOfInsertsToLastPosition(){
+void testBunchOfInsertsToLastPosition() {
     Rope rope;
     createEmptyRope(&rope);
     char buffer[50];

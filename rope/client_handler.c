@@ -1,25 +1,9 @@
-#include <stdio.h>
 #include <string.h>
+#include <stdbool.h>
+#include <stdio.h>
 
-#include "command_handler.h"
+#include "client_handler.h"
 
-#define EXIT 0
-#define RETRY 1
-#define MAX_COMMAND_LENGTH 10
-
-#define INSERT_OPCODE 1
-#define DELETE_OPCODE 2
-#define SPACE_OPCODE 3
-#define NEWLINE_OPCODE 4
-#define PRINT_OPCODE 5
-
-static void _printCustomError(char *message) {
-    fprintf(stderr, "Error: %s.\n", message);
-}
-
-static void _printGenericError() {
-    _printCustomError("Invalid command");
-}
 
 static int _lengthExceptForSpaces(char *input) {
     int length = 0;
@@ -31,7 +15,7 @@ static int _lengthExceptForSpaces(char *input) {
     return length;
 }
 
-static int _getInput(CommandHandler *self) {
+static int _getInput(ClientHandler *self) {
     char *could_read;
 
     if (self->command_file) {
@@ -50,7 +34,7 @@ static int _getInput(CommandHandler *self) {
     bool commandIsEmpty = _lengthExceptForSpaces(self->input) <= strlen("\n\0");
 
     if (last_character != '\n') {
-        _printCustomError("Command length greater than expected");
+        fprintf(stderr, "Command length greater than expected");
         return RETRY;
     }
     if (commandIsEmpty) {
@@ -61,63 +45,66 @@ static int _getInput(CommandHandler *self) {
     return EXIT;
 }
 
-static void _getValidInput(CommandHandler *self) {
-    int status;
+static void _getValidInput(ClientHandler *self) {
+    int exit_code;
     do {
-        status = _getInput(self);
-    } while (status == RETRY);
+        exit_code = _getInput(self);
+    } while (exit_code == RETRY);
 }
 
-static void _processInsert(CommandHandler *self, char *options) {
+static void _processInsert(ClientHandler *self, char *options) {
     int position;
     char content[MAX_INPUT_LENGTH];
     if (sscanf(options, "%d %s", &position, content) != 2) {
-        _printGenericError();
+        fprintf(stderr, "Invalid command");
     }
     int content_length = (int) strlen(content);
-    sendInteger(self->connection_handler, INSERT_OPCODE, 4);
-    sendInteger(self->connection_handler, position, 4);
-    sendInteger(self->connection_handler, content_length, 2);
+    sendInteger(self->connection_handler, INSERT_OPCODE, LONG_INT);
+    sendInteger(self->connection_handler, position, LONG_INT);
+    sendInteger(self->connection_handler, content_length, SHORT_INT);
     sendString(self->connection_handler, content, content_length);
 }
 
-static void _processDelete(CommandHandler *self, char *options) {
+static void _processDelete(ClientHandler *self, char *options) {
     int from, to;
     if (sscanf(options, "%d %d", &from, &to) != 2) {
-        _printGenericError();
+        fprintf(stderr, "Invalid command");
     }
-    sendInteger(self->connection_handler, DELETE_OPCODE, 4);
-    sendInteger(self->connection_handler, to, 4);
-    sendInteger(self->connection_handler, from, 4);
+    sendInteger(self->connection_handler, DELETE_OPCODE, LONG_INT);
+    sendInteger(self->connection_handler, to, LONG_INT);
+    sendInteger(self->connection_handler, from, LONG_INT);
 }
 
-static void
-_processInsertCharacter(CommandHandler *self, char *character,
-                        char *position_as_string) {
+static void _processInsertCharacter(ClientHandler *self, char *character,
+                                    char *position_as_string) {
     int position;
     if (sscanf(position_as_string, "%d", &position) != 1) {
-        _printGenericError();
+        fprintf(stderr, "Invalid command");
     }
 
     if (strcmp(character, " ") == 0) {
-        sendInteger(self->connection_handler, SPACE_OPCODE, 4);
+        sendInteger(self->connection_handler, SPACE_OPCODE, LONG_INT);
     } else if (strcmp(character, "\n") == 0) {
-        sendInteger(self->connection_handler, NEWLINE_OPCODE, 4);
+        sendInteger(self->connection_handler, NEWLINE_OPCODE, LONG_INT);
     } else {
         return;
     }
-    sendInteger(self->connection_handler, position, 4);
+    sendInteger(self->connection_handler, position, LONG_INT);
 }
 
-static void _processPrint(CommandHandler *self) {
+static void _processPrint(ClientHandler *self) {
+    sendInteger(self->connection_handler, PRINT_OPCODE, LONG_INT);
+    int length;
+    if (receiveInteger(self->connection_handler, &length, LONG_INT) == ERROR) {
+        return;
+    }
     char buffer[MAX_INPUT_LENGTH];
-    sendInteger(self->connection_handler, PRINT_OPCODE, 4);
-    int length = receiveInteger(self->connection_handler, 4);
-    receiveString(self->connection_handler, buffer, length);
+    if (receiveString(self->connection_handler, buffer, length) ==
+        ERROR) { return; }
     printf("%s", buffer);
 }
 
-static int _processInput(CommandHandler *self) {
+static int _processInput(ClientHandler *self) {
     char command[MAX_COMMAND_LENGTH];
     char options[MAX_INPUT_LENGTH];
 
@@ -133,7 +120,7 @@ static int _processInput(CommandHandler *self) {
         } else if (strcmp(command, "print") == 0) {
             _processPrint(self);
         } else {
-            _printGenericError();
+            fprintf(stderr, "Invalid command");
         }
         return RETRY;
     } else {
@@ -141,14 +128,14 @@ static int _processInput(CommandHandler *self) {
     }
 }
 
-void run(CommandHandler *self,
-         ConnectionHandler *connection_handler,
-         FILE *command_file) {
-    self->connection_handler = connection_handler;
-    self->command_file = command_file;
+void runClientHandler(ClientHandler *client_handler,
+                      ConnectionHandler *connection_handler,
+                      FILE *command_file) {
+    client_handler->connection_handler = connection_handler;
+    client_handler->command_file = command_file;
     int status;
     do {
-        _getValidInput(self);
-        status = _processInput(self);
+        _getValidInput(client_handler);
+        status = _processInput(client_handler);
     } while (status == RETRY);
 }
