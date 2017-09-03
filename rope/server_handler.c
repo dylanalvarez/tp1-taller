@@ -8,7 +8,7 @@ static void _processInsert(ServerHandler *self) {
     int length;
     if (receiveInteger(self->connection_handler, &length, SHORT_INT) ==
         ERROR) { return; }
-    char buffer[MAX_COMMAND_LENGTH];
+    char buffer[MAX_INPUT_LENGTH];
     if (receiveString(self->connection_handler, buffer, length) ==
         ERROR) { return; }
     insert(self->rope, buffer, position);
@@ -34,7 +34,7 @@ _processInsertCharacter(ServerHandler *self, char *character) {
 }
 
 static void _processPrint(ServerHandler *self) {
-    char buffer[MAX_COMMAND_LENGTH];
+    char buffer[MAX_INPUT_LENGTH];
     getRopeContent(self->rope, buffer);
     int buffer_length = (int) getRopeContentLength(self->rope);
     sendInteger(self->connection_handler, buffer_length, LONG_INT);
