@@ -45,7 +45,7 @@ int main(int argc, char **argv) {
             return ERROR;
         }
         FILE *command_file = NULL;
-        if (number_of_arguments == 4) {
+        if (number_of_arguments > 3) {
             command_file = fopen(argv[4], "r");
         }
         int exit_code = _handleClient(argv, command_file);
