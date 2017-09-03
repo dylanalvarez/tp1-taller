@@ -30,18 +30,14 @@ static int _getInput(ClientHandler *self) {
     }
 
     size_t input_length = strlen(self->input);
-    char last_character = self->input[input_length - 1];
     bool commandIsEmpty = _lengthExceptForSpaces(self->input) <= strlen("\n\0");
 
-    if (last_character != '\n') {
-        fprintf(stderr, "Command length greater than expected");
-        return RETRY;
+    if (self->input[input_length - 1] == '\n') {
+        self->input[input_length - 1] = 0;
     }
     if (commandIsEmpty) {
         return RETRY;
     }
-
-    self->input[input_length - 1] = 0;
     return EXIT;
 }
 
