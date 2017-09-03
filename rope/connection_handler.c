@@ -17,7 +17,7 @@
 #include "constants.h"
 
 
-int _createConnectionHandler(ConnectionHandler *self, char *ip, char *port) {
+static int _createConnectionHandler(ConnectionHandler *self, char *ip, char *port) {
     bool is_server = !ip;
 
     struct addrinfo hints;
@@ -116,7 +116,7 @@ void sendString(ConnectionHandler *self, char *content, int size_in_bytes) {
     }
 }
 
-int _receiveString(ConnectionHandler *self, char *buffer, int size_in_bytes) {
+static int _receiveString(ConnectionHandler *self, char *buffer, int size_in_bytes) {
     int received_bytes = 0;
     bool error = false;
     while (received_bytes < size_in_bytes && !error) {

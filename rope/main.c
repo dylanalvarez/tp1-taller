@@ -6,7 +6,7 @@
 #define SUCCESS 0
 #define ERROR -1
 
-int _handleClient(char **argv, FILE *command_file) {
+static int _handleClient(char **argv, FILE *command_file) {
     ConnectionHandler connection_handler;
     char *ip = argv[2];
     char *port = argv[3];
@@ -19,7 +19,7 @@ int _handleClient(char **argv, FILE *command_file) {
     return SUCCESS;
 }
 
-int _handleServer(char **argv) {
+static int _handleServer(char **argv) {
     ConnectionHandler connection_handler;
     char *port = argv[2];
     if (createServerConnectionHandler(&connection_handler, port) == ERROR) {

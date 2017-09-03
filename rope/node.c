@@ -38,7 +38,7 @@ size_t getSubRopeContentLength(RopeNode *self) {
     return total;
 }
 
-void _removeContent(RopeNode *self) {
+static void _removeContent(RopeNode *self) {
     free(self->content);
     self->content = NULL;
 }

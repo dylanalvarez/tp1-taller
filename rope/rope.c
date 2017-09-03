@@ -91,7 +91,7 @@ void splitRope(Rope *source, size_t characters_to_left,
     right->root = source->root;
 }
 
-int _translateNegativeIndex(Rope *self, int index) {
+static int _translateNegativeIndex(Rope *self, int index) {
     size_t content_length = getRopeContentLength(self);
     if (content_length == 0){
         return 0;
