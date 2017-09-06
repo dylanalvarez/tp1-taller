@@ -1,10 +1,6 @@
 #include "client_handler.h"
 #include <string.h>
-#include "rope_tests.h"
 #include "server_handler.h"
-
-#define SUCCESS 0
-#define ERROR -1
 
 static int _handleClient(char **argv, FILE *command_file) {
     ConnectionHandler connection_handler;
@@ -36,7 +32,7 @@ static int _handleServer(char **argv) {
 
 int main(int argc, char **argv) {
     int number_of_arguments = argc - 1;
-    if (number_of_arguments < 1) {
+    if (number_of_arguments < 2) {
         return ERROR;
     }
 
@@ -55,14 +51,7 @@ int main(int argc, char **argv) {
         return exit_code;
 
     } else if (strcmp(argv[1], "server") == 0) { // server 9898
-        if (number_of_arguments < 2) {
-            return ERROR;
-        }
         return _handleServer(argv);
-
-    } else if (strcmp(argv[1], "test") == 0) { // test
-        runRopeTests();
-        return SUCCESS;
     }
 
     return ERROR;
